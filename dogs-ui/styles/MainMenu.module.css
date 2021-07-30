@@ -1,0 +1,28 @@
+.container {
+  padding: 100px 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  font-family: "Roboto";
+}
+
+.title {
+  grid-area: 1 / 2 / 3 / 6;
+  display: grid;
+  align-items: center;
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 30px;
+
+}
+
+.items {
+  grid-area: 3 / 2 / 6 / 6;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 50px;
+  justify-content: center;
+}

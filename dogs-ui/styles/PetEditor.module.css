@@ -1,0 +1,62 @@
+.container {
+  padding: 85px 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 250px;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  font-family: "Roboto";
+}
+
+.avatar {
+  grid-area: 1 / 1 / 2 / 2;
+  margin: 10px 0;
+}
+
+.avatar__image {
+  margin: auto;
+  cursor: pointer;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+.avatar__rating {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.general {
+  padding: 25px;
+  grid-area: 1 / 2 / 2 / 5;
+}
+
+.detail {
+  padding: 25px 0 0 0;
+  grid-area: 2 / 1 / 4 / 5;
+}
+
+.toolbar {
+  text-align: end;
+  grid-area: 6 / 1 / 7 / 5;
+}
+
+.input {
+
+  margin: 20px 0;
+}
+
+.input.input__main input {
+  font-weight: bold;
+}
+
+.error {
+  font-family: "Roboto";
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 100px 0;
+  width: 100%;
+}

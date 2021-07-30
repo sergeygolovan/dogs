@@ -1,0 +1,28 @@
+.container {
+  padding: 85px 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.search {
+    grid-area: 1 / 2 / 1 / 6;
+    display: grid;
+    align-items: center;
+
+}
+
+.search > div {
+    width: 100%;
+}
+
+.items {
+  grid-area: 2 / 2 / 6 / 6;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 2vw;
+  grid-auto-rows: 200px;
+  justify-content: center;
+}
