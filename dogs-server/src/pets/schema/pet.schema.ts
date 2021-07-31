@@ -11,7 +11,7 @@ export class Pet {
   @Prop({ required: false })
   image: string;
 
-  @Prop({ type: Number, required: false, default: null })
+  @Prop({ type: Number, required: false, default: 0 })
   rating: number;
 
   @Prop({ required: false })

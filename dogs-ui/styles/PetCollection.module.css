@@ -19,10 +19,28 @@
 }
 
 .items {
+  margin-top: 20px;
   grid-area: 2 / 2 / 6 / 6;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: auto !important;
   grid-gap: 2vw;
   grid-auto-rows: 200px;
   justify-content: center;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding: 70px 0 0 0;
+    display: block;
+    grid-row-gap: 20px;
+  }
+
+  .items {
+    grid-area: none;
+    grid-template-columns: none;
+    grid-auto-rows: auto !important;
+    grid-gap: 50px;
+    justify-content: center;
+  }
 }

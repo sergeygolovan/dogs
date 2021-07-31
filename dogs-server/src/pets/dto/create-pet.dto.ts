@@ -1,20 +1,4 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiProperty, OmitType } from "@nestjs/swagger";
+import { UpdatePetDto } from "./update-pet.dto";
 
-export class CreatePetDto {
-    name: string;
-
-    @ApiProperty({ type: 'string', format: 'binary' })
-    image?: any;
-
-    rating?: number;
-
-    breed?: string;
-
-    feed?: string;
-
-    character?: string;
-
-    diseases?: string;
-
-    comments?: string;
-}
+export class CreatePetDto extends OmitType(UpdatePetDto, ["_id"] as const) {}

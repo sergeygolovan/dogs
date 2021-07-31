@@ -13,6 +13,7 @@ import Head from "next/head";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import NoteAddIcon from '@material-ui/icons/NoteAdd';
 import SearchIcon from "@material-ui/icons/Search";
+import styles from '../styles/MainLayout.module.css'
 import { useRouter } from "next/router";
 
 interface MainLayoutProps {
@@ -28,9 +29,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   onNavBack
 }) => {
 
+  const router = useRouter()
+
   if (!onNavBack) {
-    const router = useRouter()
     onNavBack = () => router.back()
+  }
+
+  const onNavTo =(path) => () => {
+    router.push(path);
   }
 
   return (
@@ -45,7 +51,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           rel="stylesheet"
         ></link>
       </Head>
-      <AppBar position="fixed">
+      <AppBar position="fixed" className={styles.toolbar}>
         <Toolbar>
           {showBackButton ? (
             <IconButton
@@ -58,19 +64,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({
               <ArrowBackIcon />
             </IconButton>
           ) : null}
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            {title || "Каникулы на пахре"}
-          </Typography>
           <Stack spacing={2} direction="row">
-            <Button variant="contained" size={"large"} color="success" disableElevation>Создать заказ</Button>
-            <Button variant="contained" disableElevation>Календарь</Button>
-            <Button variant="contained" disableElevation>База питомцев</Button>
-            <Button variant="contained" disableElevation>База клиентов</Button>
+            <Button variant="contained" size={"large"} color="success" disableElevation onClick={onNavTo("/orders/create")}>Создать заказ</Button>
+            <Button variant="contained" disableElevation onClick={onNavTo("/pets")}>База питомцев</Button>
+            <Button variant="contained" disableElevation onClick={onNavTo("/calendar")}>Календарь</Button>
+            <Button variant="contained" disableElevation onClick={onNavTo("/customers")}>База клиентов</Button>
           </Stack>
         </Toolbar>
       </AppBar>

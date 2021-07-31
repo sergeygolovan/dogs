@@ -1,4 +1,12 @@
-import { ChangeEvent, FC, SyntheticEvent, useEffect, useReducer } from "react";
+import {
+  ChangeEvent,
+  FC,
+  SyntheticEvent,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Rating from "@material-ui/core/Rating";
 import TextField from "@material-ui/core/TextField";
@@ -7,22 +15,32 @@ import styles from "../styles/PetEditor.module.css";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { useActions } from "../hooks/useActions";
 import { AnyAction } from "redux";
+import router, { useRouter } from "next/router";
+import ErrorDialog from "./ErrorDialog";
 
 export interface PetEditorProps {
   mode: "edit" | "create";
 }
 
-const PetEditor: FC<PetEditorProps> = ({ mode }) => {
-  const { item, error, message } = useTypedSelector(
+export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
+  const { item, error, message, redirectTo } = useTypedSelector(
     (state) => state.selectedPet
   );
+
+  const router = useRouter();
+
+  if (redirectTo) {
+    router.push(redirectTo);
+  }
+
+  const avatarRef = useRef<HTMLInputElement>();
 
   const defaultValues = {
     name: "",
     image: "",
     rating: 0,
     breed: "",
-    feed: item?.feed || "",
+    feed: "",
     character: "",
     diseases: "",
     comments: "",
@@ -33,9 +51,10 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
       switch (action.type) {
         case "reset":
           return {
+            _id: item?._id || null,
             name: item?.name || "",
             image: item?.image || "",
-            rating: item?.rating || null,
+            rating: item?.rating || 0,
             breed: item?.breed || "",
             feed: item?.feed || "",
             character: item?.character || "",
@@ -54,18 +73,24 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
   );
 
   useEffect(() => {
-      dispatch({ type: "reset" });
+    dispatch({ type: "reset" });
   }, [item]);
 
-  const { createPet, updatePet } = useActions();
+  const { createPet, updatePet, deletePet } = useActions();
 
   const onSave = () => {
     if (fieldsState.name) {
-      if (mode === 'edit') {
+      if (mode === "edit") {
         updatePet(fieldsState);
       } else {
-        createPet(fieldsState)
+        createPet(fieldsState);
       }
+    }
+  };
+
+  const onDelete = () => {
+    if (item) {
+      deletePet(item._id);
     }
   };
 
@@ -79,6 +104,14 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
     });
   };
 
+  const onChangeAvatar = async (e: ChangeEvent<HTMLInputElement>) => {
+    let image = e.target.files?.[0];
+
+    if (image) {
+      dispatch({ type: "attachImage", payload: image });
+    }
+  };
+
   const getAvatarProps = () => {
     let avatarProps = {
       alt: item?.name || "",
@@ -88,7 +121,7 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
     };
 
     if (item?.image) {
-      avatarProps.src = item.image;
+      avatarProps.src = `http://192.168.1.57:5000/${item.image}`;
     } else {
       if (item?.name) {
         avatarProps.children = item.name.slice(0, 2).toUpperCase();
@@ -100,17 +133,16 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
     return avatarProps;
   };
 
-  return error ? (
-    <div className={styles.error}>{message}</div>
-  ) : (
+  return (
     <div className={styles.container}>
+      {error ? <ErrorDialog message={message} /> : null}
       <div className={styles.avatar}>
         <input
           accept="image/*"
           className={styles.hidden}
           id="avatar-button-file"
           type="file"
-          onChange={() => {}}
+          onChange={onChangeAvatar}
         />
         <label htmlFor="avatar-button-file">
           <Avatar className={styles.avatar__image} {...getAvatarProps()} />
@@ -139,6 +171,14 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
       </div>
 
       <div className={styles.detail}>
+        <TextField
+          className={styles.input}
+          fullWidth
+          label="Хозяева"
+          onChange={onChange("owners")}
+          value={fieldsState.owners}
+        />
+
         <TextField
           className={styles.input}
           fullWidth
@@ -175,7 +215,21 @@ const PetEditor: FC<PetEditorProps> = ({ mode }) => {
       </div>
 
       <div className={styles.toolbar}>
+        {mode === "edit" ? (
+          <Button
+            className={styles.toolbar__button}
+            variant="contained"
+            size="large"
+            color="error"
+            disableElevation
+            onClick={onDelete}
+          >
+            Удалить
+          </Button>
+        ) : null}
+
         <Button
+          className={styles.toolbar__button}
           variant="contained"
           size="large"
           color="primary"

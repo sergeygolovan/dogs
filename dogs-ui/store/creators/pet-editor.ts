@@ -12,7 +12,7 @@ export const fetchPet = (id: string) => {
 
     try {
       const response = await axios.get<IPet>(
-        `http://localhost:5000/pets/${id}`
+        `http://192.168.1.57:5000/pets/${id}`
       );
       dispatch({
         type: PetEditorActionTypes.FETCH_PET_SUCCEEDED,
@@ -30,15 +30,22 @@ export const fetchPet = (id: string) => {
 export const createPet = (pet: any) => {
   return async (dispatch: Dispatch<PetEditorAction>) => {
     dispatch({ type: PetEditorActionTypes.CREATE_PET_REQUESTED, payload: pet });
-
     try {
+      const data = new FormData();
+
+      Object.keys(pet).forEach((field) => data.append(field, pet[field]));
+
       const response = await axios.post<IPet>(
-        `http://localhost:5000/pets`,
-        pet
+        `http://192.168.1.57:5000/pets`,
+        data
       );
       dispatch({
         type: PetEditorActionTypes.CREATE_PET_SUCCEEDED,
         payload: response.data,
+      });
+      dispatch({
+        type: PetEditorActionTypes.REDIRECT,
+        payload: `/pets/${response.data._id}`,
       });
     } catch (e) {
       dispatch({
@@ -54,13 +61,21 @@ export const updatePet = (pet: any) => {
     dispatch({ type: PetEditorActionTypes.UPDATE_PET_REQUESTED, payload: pet });
 
     try {
+
+      const data = new FormData();
+      Object.keys(pet).forEach((field) => data.append(field, pet[field]));
+
       const response = await axios.put<IPet>(
-        `http://localhost:5000/pets/${pet.id}`,
-        pet
+        `http://192.168.1.57:5000/pets`,
+        data
       );
       dispatch({
         type: PetEditorActionTypes.UPDATE_PET_SUCCEEDED,
         payload: response.data,
+      });
+      dispatch({
+        type: PetEditorActionTypes.REDIRECT,
+        payload: `/pets/${response.data._id}`,
       });
     } catch (e) {
       dispatch({
@@ -71,8 +86,33 @@ export const updatePet = (pet: any) => {
   };
 };
 
-// export const reset = () => {
-//   return async (dispatch: Dispatch<PetEditorAction>) => {
-//     dispatch({ type: PetEditorActionTypes.RESET });
-//   };
-// };
+export const deletePet = (id: string) => {
+  return async (dispatch: Dispatch<PetEditorAction>) => {
+    dispatch({ type: PetEditorActionTypes.DELETE_PET_REQUESTED, payload: id });
+
+    try {
+      const response = await axios.delete<string>(
+        `http://192.168.1.57:5000/pets/${id}`,
+      );
+      dispatch({
+        type: PetEditorActionTypes.DELETE_PET_SUCCEEDED,
+        payload: response.data,
+      });
+      dispatch({
+        type: PetEditorActionTypes.REDIRECT,
+        payload: '/pets',
+      });
+    } catch (e) {
+      dispatch({
+        type: PetEditorActionTypes.DELETE_PET_FAILED,
+        payload: `Произошла ошибка при обновлении данных о питомце: ${e.message}`,
+      });
+    }
+  };
+};
+
+export const redirect = (id: string) => {
+  return async (dispatch: Dispatch<PetEditorAction>) => {
+    dispatch({ type: PetEditorActionTypes.REDIRECT, payload: id });
+  };
+};

@@ -1,0 +1,10 @@
+.content {
+  max-height: 140px;
+  overflow: hidden;
+}
+
+.content p {
+  overflow: hidden;
+  max-height: 40px;
+  text-overflow: ellipsis;
+}

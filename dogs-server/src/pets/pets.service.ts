@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { FilesService, FileType } from 'src/files/files.service';
 import { CreatePetDto } from './dto/create-pet.dto';
+import { UpdatePetDto } from './dto/update-pet.dto';
 import { Pet, PetDocument } from './schema/pet.schema';
 
 @Injectable()
 export class PetsService {
+
+  private readonly logger = new Logger(PetsService.name);
+
   constructor(
     @InjectModel(Pet.name) private readonly petModel: Model<PetDocument>,
     private readonly fileService: FilesService,
@@ -18,11 +22,16 @@ export class PetsService {
   ): Promise<Pet> {
 
     if (image) {
-        createPetDto.image = `data:${image.mimetype};base64, ${image.buffer.toString('base64')}`;
+
+      createPetDto.image = this.fileService.createFile(FileType.IMAGE, image);
+      
+      // `data:${
+      //   image.mimetype
+      // };base64, ${image.buffer.toString('base64')}`;
     }
 
     const pet = await this.petModel.create({
-      ...createPetDto
+      ...createPetDto,
     });
 
     return pet;
@@ -48,5 +57,19 @@ export class PetsService {
       name: { $regex: new RegExp(query, 'i') },
     });
     return tracks;
+  }
+
+  async update(updatePetDto: UpdatePetDto, image?: Express.Multer.File): Promise<Pet> {
+    if (image) {
+      updatePetDto.image = `data:${
+        image.mimetype
+      };base64, ${image.buffer.toString('base64')}`;
+    }
+
+    const pet = await this.petModel.findByIdAndUpdate(updatePetDto._id, {
+      ...updatePetDto,
+    });
+
+    return pet;
   }
 }

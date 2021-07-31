@@ -3,8 +3,10 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseInterceptors,
@@ -16,21 +18,42 @@ import {
 import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import { CreatePetDto } from './dto/create-pet.dto';
+import { UpdatePetDto } from './dto/update-pet.dto';
 import { PetsService } from './pets.service';
 
 @ApiTags('petabase')
 @Controller('pets')
 export class PetsController {
+
+  private readonly logger = new Logger(PetsController.name);
+
   constructor(private readonly petsService: PetsService) {}
 
   @Post()
   @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   async create(@Body() createPetDto: CreatePetDto, @UploadedFiles() files?) {
-    let image: Express.Multer.File = files.image?.[0];
+
+    this.logger.log('Создание записи о питомце...')
+    this.logger.log({ dto: createPetDto, files });
+
+    let image: Express.Multer.File = files?.image?.[0];
 
     return this.petsService.create(createPetDto, image);
   }
+
+  @Put()
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @ApiConsumes('multipart/form-data')
+  async update(@Body() updatePetDto: UpdatePetDto, @UploadedFiles() files?) {
+
+    this.logger.log('Обновление записи о питомце...')
+    this.logger.log({ dto: updatePetDto, files });
+
+    let image: Express.Multer.File = files?.image?.[0];
+    return this.petsService.update(updatePetDto, image);
+  }
+
 
   @Get()
   getAll() {

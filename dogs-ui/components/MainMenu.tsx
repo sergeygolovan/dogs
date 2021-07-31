@@ -43,8 +43,6 @@ export default function MainMenu() {
       </Head>
 
       <main className={styles.container}>
-        <div className={styles.title}>{title}</div>
-
         <div className={styles.items}>
           {items.map(itemProps => <MainMenuItem key={itemProps.href} {...itemProps}/>)}
         </div>

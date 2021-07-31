@@ -10,7 +10,12 @@ import * as path from 'path';
 @Module({
   imports: [
     ServeStaticModule.forRoot({rootPath: path.resolve(__dirname, 'static')}),
-    MongooseModule.forRoot('mongodb+srv://admin:8BzofGVDd4ucJVzY@cluster0.usgdn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority'),
+    MongooseModule.forRoot(
+      'mongodb+srv://admin:8BzofGVDd4ucJVzY@cluster0.usgdn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+      {
+        useFindAndModify: false
+      }
+    ),
     PetsModule, 
     CustomersModule, 
     OrdersModule, 

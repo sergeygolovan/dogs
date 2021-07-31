@@ -12,7 +12,7 @@ export const fetchPetCollection = () => {
     dispatch({ type: PetCollectionActionTypes.FETCH_PETS });
 
     try {
-      const response = await axios.get<IPet[]>("http://localhost:5000/pets");
+      const response = await axios.get<IPet[]>("http://192.168.1.57:5000/pets");
       dispatch({
         type: PetCollectionActionTypes.FETCH_PETS_SUCCESS,
         payload: response.data,

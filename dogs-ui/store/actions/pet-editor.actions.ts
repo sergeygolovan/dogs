@@ -14,6 +14,12 @@ export enum PetEditorActionTypes {
   UPDATE_PET_SUCCEEDED = "UPDATE_PET_SUCCEEDED",
   UPDATE_PET_FAILED = "UPDATE_PET_FAILED",
 
+  DELETE_PET_REQUESTED = "DELETE_PET_REQUESTED",
+  DELETE_PET_SUCCEEDED = "DELETE_PET_SUCCEEDED",
+  DELETE_PET_FAILED = "DELETE_PET_FAILED",
+
+  REDIRECT = "REDIRECT",
+
   // RESET = "RESET",
 }
 
@@ -52,20 +58,39 @@ interface CreatePetFailedAction extends AnyAction {
 }
 
 interface UpdatePetRequestedAction extends AnyAction {
-  type: PetEditorActionTypes.CREATE_PET_REQUESTED;
+  type: PetEditorActionTypes.UPDATE_PET_REQUESTED;
   payload: IPet;
 }
 
 interface UpdatePetSucceededAction extends AnyAction {
-  type: PetEditorActionTypes.CREATE_PET_SUCCEEDED;
+  type: PetEditorActionTypes.UPDATE_PET_SUCCEEDED;
   payload: IPet;
 }
 
 interface UpdatePetFailedAction extends AnyAction {
-  type: PetEditorActionTypes.CREATE_PET_FAILED;
+  type: PetEditorActionTypes.UPDATE_PET_FAILED;
   payload: string;
 }
 
+interface DeletePetRequestedAction extends AnyAction {
+  type: PetEditorActionTypes.DELETE_PET_REQUESTED;
+  payload: string;
+}
+
+interface DeletePetSucceededAction extends AnyAction {
+  type: PetEditorActionTypes.DELETE_PET_SUCCEEDED;
+  payload: string;
+}
+
+interface DeletePetFailedAction extends AnyAction {
+  type: PetEditorActionTypes.DELETE_PET_FAILED;
+  payload: string;
+}
+
+interface RedirectAction extends AnyAction {
+  type: PetEditorActionTypes.REDIRECT;
+  payload: string;
+}
 
 export type PetEditorAction =
   | FetchPetRequestedAction
@@ -76,7 +101,11 @@ export type PetEditorAction =
   | CreatePetFailedAction
   | UpdatePetRequestedAction
   | UpdatePetSucceededAction
-  | UpdatePetFailedAction;
+  | UpdatePetFailedAction
+  | DeletePetRequestedAction
+  | DeletePetSucceededAction
+  | DeletePetFailedAction
+  | RedirectAction;
 
-  // | ResetAction
-  // | UpdateFieldAction;
+// | ResetAction
+// | UpdateFieldAction;
