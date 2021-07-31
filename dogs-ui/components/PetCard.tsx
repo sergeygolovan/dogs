@@ -14,9 +14,10 @@ const PetCard: FC<IPet> = (props) => {
   const router = useRouter()
 
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card sx={{ maxWidth: 345 }} className={styles.container}>
       <CardActionArea onClick={() => router.push(`pets/${props._id}`)}>
         {props.image ? <CardMedia
+          className={styles.avatar}
           sx={{ height: 140 }}
           image={`http://192.168.1.57:5000/${props.image}`}
           title={props.name}

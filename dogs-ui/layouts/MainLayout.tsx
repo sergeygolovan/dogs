@@ -64,11 +64,11 @@ const MainLayout: React.FC<MainLayoutProps> = ({
               <ArrowBackIcon />
             </IconButton>
           ) : null}
-          <Stack spacing={2} direction="row">
-            <Button variant="contained" size={"large"} color="success" disableElevation onClick={onNavTo("/orders/create")}>Создать заказ</Button>
+          <Stack spacing={2} direction="row" className={styles.nav}>
+            {/* <Button variant="contained" size={"large"} color="success" disableElevation onClick={onNavTo("/orders/create")}>Создать заказ</Button> */}
             <Button variant="contained" disableElevation onClick={onNavTo("/pets")}>База питомцев</Button>
-            <Button variant="contained" disableElevation onClick={onNavTo("/calendar")}>Календарь</Button>
-            <Button variant="contained" disableElevation onClick={onNavTo("/customers")}>База клиентов</Button>
+            {/* <Button variant="contained" disableElevation onClick={onNavTo("/calendar")}>Календарь</Button>
+            <Button variant="contained" disableElevation onClick={onNavTo("/customers")}>База клиентов</Button> */}
           </Stack>
         </Toolbar>
       </AppBar>

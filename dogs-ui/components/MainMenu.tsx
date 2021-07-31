@@ -8,30 +8,34 @@ export default function MainMenu() {
 
   const items: IMainMenuItemProps[] = [
     {
+      title: "База питомцев",
+      description: "Просмотр и редактирование информации о питомцах",
+      href: "/pets",
+    },
+    {
       title: "Создать заказ",
       description: "Быстрое создание заказа, карточки клиента и анкет питомцев",
       href: "/orders/create",
+      enabled: false
     },
     {
       title: "Просмотр заказов",
       description: "Просмотр и создание заказов",
       href: "/orders",
+      enabled: false
     },
     {
       title: "Календарь",
       description: "Просмотр и создание заказов в календаре",
       href: "/calendar",
+      enabled: false
     },
     {
       title: "База клиентов",
       description: "Просмотр и редактирование картотеки клиентов",
       href: "/customers",
-    },
-    {
-      title: "База питомцев",
-      description: "Просмотр и редактирование информации о питомцах",
-      href: "/pets",
-    },
+      enabled: false
+    }
   ];
 
   return (

@@ -43,4 +43,9 @@ export class UpdatePetDto {
     @IsOptional()
     @IsString()
     comments?: string;
+
+    @Allow()
+    @IsOptional()
+    @IsString()
+    owners?: string;
 }

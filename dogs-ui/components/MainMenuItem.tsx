@@ -7,11 +7,17 @@ export interface IMainMenuItemProps {
   title: string;
   description: string;
   href: string;
+  enabled?: boolean;
 }
 
-const MainMenuItem: FC<IMainMenuItemProps> = ({ title, description, href }) => {
+const MainMenuItem: FC<IMainMenuItemProps> = ({ title, description, href, enabled = true }) => {
+
+  if (!enabled) {
+    href = ''
+  }
+
   return (
-    <Link href={href}>
+    <Link href={href} >
       <div className={styles.item}>
         <a href={href} className={styles.item__link}>
           <div className={styles.item__title}>

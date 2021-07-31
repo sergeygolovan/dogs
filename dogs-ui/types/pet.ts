@@ -8,6 +8,7 @@ export default interface IPet {
     character?: string;
     diseases?: string;
     comments?: string;
+    owners?: string;
 }
 
 export type IPetFields = Omit<IPet, "_id">;

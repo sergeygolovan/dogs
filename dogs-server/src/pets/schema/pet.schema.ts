@@ -28,6 +28,9 @@ export class Pet {
 
   @Prop({ required: false })
   comments: string;
+
+  @Prop({ required: false })
+  owners: string;
 }
 
 export const PetSchema = SchemaFactory.createForClass(Pet);

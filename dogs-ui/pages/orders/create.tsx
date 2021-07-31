@@ -3,7 +3,7 @@ import React from "react";
 import MainLayout from "../../layouts/MainLayout";
 
 function createOrderPage() {
-    const router = useRouter();
+  const router = useRouter();
 
   return (
     <MainLayout

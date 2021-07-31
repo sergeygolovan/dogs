@@ -35,7 +35,7 @@ export class PetsController {
   async create(@Body() createPetDto: CreatePetDto, @UploadedFiles() files?) {
 
     this.logger.log('Создание записи о питомце...')
-    this.logger.log({ dto: createPetDto, files });
+    this.logger.log({ dto: createPetDto });
 
     let image: Express.Multer.File = files?.image?.[0];
 
@@ -48,7 +48,7 @@ export class PetsController {
   async update(@Body() updatePetDto: UpdatePetDto, @UploadedFiles() files?) {
 
     this.logger.log('Обновление записи о питомце...')
-    this.logger.log({ dto: updatePetDto, files });
+    this.logger.log({ dto: updatePetDto });
 
     let image: Express.Multer.File = files?.image?.[0];
     return this.petsService.update(updatePetDto, image);

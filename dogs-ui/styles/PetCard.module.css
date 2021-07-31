@@ -8,3 +8,16 @@
   max-height: 40px;
   text-overflow: ellipsis;
 }
+
+@media (max-width: 600px) {
+
+  .container {
+    width: 90vw;
+    max-width: 90vw;
+    height: 50vh;
+  }
+
+  .avatar {
+    height: 35vh;
+  }
+}

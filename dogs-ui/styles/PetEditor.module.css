@@ -65,3 +65,19 @@
   margin: 100px 0;
   width: 100%;
 }
+
+@media (max-width: 600px) {
+  .container {
+    padding: 70px 0 0 0;
+    display: block;
+    grid-row-gap: 20px;
+  }
+
+  .items {
+    grid-area: none;
+    grid-template-columns: none;
+    grid-auto-rows: auto !important;
+    grid-gap: 50px;
+    justify-content: center;
+  }
+}
