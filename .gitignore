@@ -1,8 +1,8 @@
 # compiled output
-/dogs-server/dist
-/dogs-ui/.next
-dogs-server/node_modules
-dogs-ui/node_modules
+/server/dist
+/ui/.next
+/server/node_modules
+/ui/node_modules
 
 # Logs
 logs
