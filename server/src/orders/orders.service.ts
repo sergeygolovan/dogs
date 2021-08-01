@@ -22,6 +22,12 @@ export class OrdersService {
     private readonly fileService: FilesService,
   ) {}
 
+
+  /**
+   * Создание записи о заказе в БД
+   * @param createOrderDto 
+   * @returns 
+   */
   async create(
     createOrderDto: CreateOrderDto
   ): Promise<Order> {
@@ -41,34 +47,50 @@ export class OrdersService {
     return order;
   }
 
+
+  /**
+   * Получение списка всех заказов из БД
+   * @returns 
+   */
   async getAll(): Promise<Order[]> {
     const orders = await this.orderModel.find();
     return orders;
   }
 
+
+  /**
+   * Получение информации о выбранном заказе из БД
+   * @param id 
+   * @returns 
+   */
   async getOne(id: ObjectId): Promise<Order> {
-    const track = await this.orderModel.findById(id).populate("customer", ["_id", "name", "image", "contacts"]).populate("pets", ["_id", "name", "image"]);
-    return track;
+    const order = await this.orderModel
+      .findById(id)
+      .populate("customer", ["_id", "name", "image", "contacts"])
+      .populate("pets", ["_id", "name", "image"]);
+
+    return order;
   }
 
+
+  /**
+   * Удаление информации о заказе из БД
+   * @param id 
+   * @returns 
+   */
   async delete(id: ObjectId): Promise<ObjectId> {
-    const track = await this.orderModel.findByIdAndDelete(id);
-    return track._id;
+    const order = await this.orderModel.findByIdAndDelete(id);
+
+    return order._id;
   }
 
-  async search(query: string): Promise<Order[]> {
-    const tracks = await this.orderModel.find({
-      name: { $regex: new RegExp(query, 'i') },
-    });
-    return tracks;
-  }
-
+  /**
+   * Обновление информации о заказе в БД
+   * @param updateOrderDto 
+   * @returns 
+   */
   async update(updateOrderDto: UpdateOrderDto): Promise<Order> {
-    const { _id, pets, ...dto} = updateOrderDto;
-
-    if (pets) {
-        Object.assign(dto, {$set : { pets }});
-    }
+    const { _id, ...dto} = updateOrderDto;
 
     const order = await this.orderModel.findByIdAndUpdate(_id, {
       ...dto

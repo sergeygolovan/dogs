@@ -34,6 +34,7 @@ import {
       return this.ordersService.create(createOrderDto);
     }
   
+
     @Put()
     async update(
       @Body() updateOrderDto: UpdateOrderDto,
@@ -43,15 +44,12 @@ import {
       return this.ordersService.update(updateOrderDto);
     }
   
+    
     @Get()
     getAll() {
       return this.ordersService.getAll();
     }
-  
-    @Get('/search')
-    search(@Query('query') query: string) {
-      return this.ordersService.search(query);
-    }
+
   
     @ApiParam({
       name: 'id',

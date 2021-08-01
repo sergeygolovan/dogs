@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { FilesService, FileType } from 'src/files/files.service';
@@ -16,6 +16,12 @@ export class CustomersService {
     private readonly fileService: FilesService,
   ) {}
 
+  /**
+   * Создание записи о клиенте в БД
+   * @param createCustomerDto 
+   * @param image 
+   * @returns 
+   */
   async create(
     createCustomerDto: CreateCustomerDto,
     image?: Express.Multer.File,
@@ -32,28 +38,80 @@ export class CustomersService {
     return customer;
   }
 
+
+  /**
+   * Получение списка всех клиентов из БД
+   * @returns 
+   */
   async getAll(): Promise<Customer[]> {
-    const customers = await this.customerModel.find();
+    const customers = await this.customerModel
+      .find(null, ["_id", "name", "image", "contacts", "rating"]);
+
     return customers;
   }
 
+
+  /**
+   * 
+   * @param id 
+   * @returns 
+   */
   async getOne(id: ObjectId): Promise<Customer> {
-    const track = await this.customerModel.findById(id).populate("pets", ["_id", "name", "image"]);
-    return track;
+    const customer = await this.customerModel
+      .findById(id)
+      .populate("pets", ["_id", "name", "image", "rating"]);
+
+    return customer;
   }
 
+
+  /**
+   * Удаление записи о клиенте из БД
+   * @param id 
+   * @returns 
+   */
   async delete(id: ObjectId): Promise<ObjectId> {
-    const track = await this.customerModel.findByIdAndDelete(id);
-    return track._id;
+    const customer = await this.customerModel
+      .findById(id, ["pets", "orders"])
+      .populate("pets", "_id")
+      .populate("orders", "_id");
+
+      if (!customer) {
+        throw new BadRequestException(`Невозможно удалить клиента с несуществующим идентификатором! (${id})`)
+      }
+
+      if (customer.pets.length) {
+        throw new BadRequestException(`Невозможно удалить клиента, для которого были заведены питомцы! (${customer.pets.join(', ')})`)
+      }
+  
+      if (customer.orders.length) {
+        throw new BadRequestException(`Невозможно удалить клиента, для которого были сформированы заказы! (${customer.orders.join(', ')})`)
+      }
+
+    return customer._id;
   }
 
+
+  /**
+   * Поиск данных о клиентах по имени в БД
+   * @param query 
+   * @returns 
+   */
   async search(query: string): Promise<Customer[]> {
-    const tracks = await this.customerModel.find({
+    const customers = await this.customerModel.find({
       name: { $regex: new RegExp(query, 'i') },
     });
-    return tracks;
+
+    return customers;
   }
 
+
+  /**
+   * Обновление информации о клиенте ы БД
+   * @param updateCustomerDto 
+   * @param image 
+   * @returns 
+   */
   async update(updateCustomerDto: UpdateCustomerDto, image?: Express.Multer.File): Promise<Customer> {
    
     if (image) {

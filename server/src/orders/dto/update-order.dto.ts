@@ -3,7 +3,7 @@ import { Allow, IsDateString, IsIn, IsMongoId, IsNumberString, IsOptional, IsStr
 import * as mongoose from "mongoose";
 import { CreateOrderDto } from "./create-order.dto";
 
-export class UpdateOrderDto extends OmitType(CreateOrderDto, ["customer"] as const) {
+export class UpdateOrderDto extends OmitType(CreateOrderDto, ["customer", "pets"] as const) {
     @Allow()
     @IsMongoId()
     _id: mongoose.Schema.Types.ObjectId;

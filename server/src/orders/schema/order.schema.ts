@@ -22,6 +22,9 @@ export class Order {
   @Prop({ required: false })
   comments: string;
 
+  @Prop({ required: false, default: 0 })
+  status: number;
+
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true })
   customer: mongoose.Schema.Types.ObjectId;
 
