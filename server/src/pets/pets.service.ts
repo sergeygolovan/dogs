@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
+import { CustomersService } from 'src/customers/customers.service';
+import { CustomerDocument } from 'src/customers/schema/customer.schema';
 import { FilesService, FileType } from 'src/files/files.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
@@ -8,11 +10,11 @@ import { Pet, PetDocument } from './schema/pet.schema';
 
 @Injectable()
 export class PetsService {
-
   private readonly logger = new Logger(PetsService.name);
 
   constructor(
     @InjectModel(Pet.name) private readonly petModel: Model<PetDocument>,
+    private readonly customerService: CustomersService,
     private readonly fileService: FilesService,
   ) {}
 
@@ -20,19 +22,13 @@ export class PetsService {
     createPetDto: CreatePetDto,
     image?: Express.Multer.File,
   ): Promise<Pet> {
-
     if (image) {
-
       createPetDto.image = this.fileService.createFile(FileType.IMAGE, image);
-      
-      // `data:${
-      //   image.mimetype
-      // };base64, ${image.buffer.toString('base64')}`;
     }
 
-    const pet = await this.petModel.create({
-      ...createPetDto,
-    });
+    const pet = await this.petModel.create({...createPetDto});
+    const customerDoc = (await this.customerService.getOne(createPetDto.customer)) as CustomerDocument;
+    await customerDoc.updateOne({ $push: { pets: pet._id } });
 
     return pet;
   }
@@ -43,7 +39,7 @@ export class PetsService {
   }
 
   async getOne(id: ObjectId): Promise<Pet> {
-    const track = await this.petModel.findById(id);
+    const track = await this.petModel.findById(id).populate("customer", ["_id", "name", "image", "contacts"]);
     return track;
   }
 
@@ -59,16 +55,17 @@ export class PetsService {
     return tracks;
   }
 
-  async update(updatePetDto: UpdatePetDto, image?: Express.Multer.File): Promise<Pet> {
+  async update(
+    updatePetDto: UpdatePetDto,
+    image?: Express.Multer.File,
+  ): Promise<Pet> {
     if (image) {
-      updatePetDto.image = `data:${
-        image.mimetype
-      };base64, ${image.buffer.toString('base64')}`;
+      updatePetDto.image = this.fileService.createFile(FileType.IMAGE, image);
     }
 
-    const pet = await this.petModel.findByIdAndUpdate(updatePetDto._id, {
-      ...updatePetDto,
-    });
+    const { _id, ...dto } = updatePetDto;
+
+    const pet = await this.petModel.findByIdAndUpdate(_id, { ...dto });
 
     return pet;
   }

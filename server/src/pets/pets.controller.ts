@@ -65,6 +65,10 @@ export class PetsController {
     return this.petsService.search(query);
   }
 
+  @ApiParam({
+    name: 'id',
+    required: true,
+  })
   @Get(':id')
   getOne(@Param('id') id: ObjectId) {
     return this.petsService.getOne(id);

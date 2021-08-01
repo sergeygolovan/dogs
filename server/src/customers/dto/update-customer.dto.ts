@@ -1,46 +1,37 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Allow, IsInt, IsMongoId, IsNumberString, IsOptional, IsString, IsUrl } from "class-validator";
+import { Allow, IsMongoId, IsNumberString, IsOptional, IsString } from "class-validator";
 import * as mongoose from "mongoose";
 
-export class UpdatePetDto {
-
+export class UpdateCustomerDto {
     @Allow()
     @IsMongoId()
     _id: mongoose.Schema.Types.ObjectId;
 
     @Allow()
-    @IsOptional()
     @IsString()
-    name?: string;
+    name: string;
 
     @Allow()
     @ApiProperty({ type: 'string', format: 'binary' })
     image?: any;
 
     @Allow()
-    @IsOptional()
     @IsNumberString()
     rating?: number = 0;
 
     @Allow()
     @IsOptional()
-    @IsString()
-    breed?: string;
+    @IsNumberString()
+    discount?: number = 0;
 
     @Allow()
     @IsOptional()
     @IsString()
-    feed?: string;
+    address?: string;
 
     @Allow()
-    @IsOptional()
     @IsString()
-    character?: string;
-
-    @Allow()
-    @IsOptional()
-    @IsString()
-    diseases?: string;
+    contacts: string;
 
     @Allow()
     @IsOptional()

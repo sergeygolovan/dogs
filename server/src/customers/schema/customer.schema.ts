@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
+import { Pet } from 'src/pets/schema/pet.schema';
 
-export type CustomerDocument = Customer & Document;
+export type CustomerDocument = Customer & mongoose.Document;
 
 @Schema()
 export class Customer {
@@ -14,14 +15,23 @@ export class Customer {
   @Prop({ type: Number, required: false, default: 0 })
   rating: number;
 
-  @Prop({ address: String, required: true })
+  @Prop({ type: Number, required: false, default: 0 })
+  discount: number;
+
+  @Prop({ address: String, required: false })
   address: string;
 
-  @Prop({ type: String, required: true})
-  phone: string;
+  @Prop({ type: String, required: true })
+  contacts: string;
 
   @Prop({ required: false })
   comments: string;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pet' }] })
+  pets: mongoose.Schema.Types.ObjectId[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Order' }] })
+  orders: mongoose.Schema.Types.ObjectId[];
 }
 
 export const CustomerSchema = SchemaFactory.createForClass(Customer);
