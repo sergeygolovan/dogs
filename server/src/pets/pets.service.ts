@@ -51,6 +51,9 @@ export class PetsService {
    * @returns список всех питомцев
    */
   async getAll(): Promise<Pet[]> {
+
+    this.logger.log(`Запрос на получение списка питомцев...`)
+
     const pets = await this.petModel
       .find(null, ["_id", "name", "image", "comments", "rating"]);
     return pets;
@@ -116,7 +119,7 @@ export class PetsService {
     updatePetDto: UpdatePetDto,
     image?: Express.Multer.File,
   ): Promise<Pet> {
-    
+
     if (image) {
       updatePetDto.image = this.fileService.createFile(FileType.IMAGE, image);
     }
