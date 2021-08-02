@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { CustomersService } from 'src/customers/customers.service';
@@ -79,7 +79,20 @@ export class OrdersService {
    * @returns 
    */
   async delete(id: ObjectId): Promise<ObjectId> {
-    const order = await this.orderModel.findByIdAndDelete(id);
+    const order = await this.orderModel
+      .findById(id);
+
+    if (!order) {
+      throw new BadRequestException(`Невозможно удалить заказ с несуществующим идентификатором! (${id})`)
+    }
+
+    const customerDoc = (await this.customersService.getOne(order.customer)) as CustomerDocument;
+    await customerDoc.updateOne({ $pull: { orders: { $eq: order._id } } });
+
+    for (let _id of order.pets) {
+      let petDoc = (await this.petsService.getOne(_id)) as PetDocument;
+      await petDoc.updateOne({ $pull: { orders: { $eq: order._id } } });
+    }
 
     return order._id;
   }

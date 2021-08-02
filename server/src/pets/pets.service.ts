@@ -55,7 +55,10 @@ export class PetsService {
     this.logger.log(`Запрос на получение списка питомцев...`)
 
     const pets = await this.petModel
-      .find(null, ["_id", "name", "image", "comments", "rating"]);
+      .find(
+        // null, 
+        // ["_id", "name", "image", "comments", "rating"]
+      );
     return pets;
   }
 
@@ -80,7 +83,9 @@ export class PetsService {
    * @returns 
    */
   async delete(id: ObjectId): Promise<ObjectId> {
-    const pet = await this.petModel.findById(id, ["orders"]).populate("orders", "_id");
+
+    const pet = await this.petModel.findById(id, ["orders", "customer"])
+      .populate("orders", "_id");
 
     if (!pet) {
       throw new BadRequestException(`Невозможно удалить питомца с несуществующим идентификатором! (${id})`)
@@ -90,24 +95,14 @@ export class PetsService {
       throw new BadRequestException(`Невозможно удалить питомца, для которого были сформированы заказы! (${pet.orders.join(', ')})`)
     }
 
+    // Обновляем список питомцев для указанного клиента
+    const customerDoc = (await this.customerService.getOne(pet.customer)) as CustomerDocument;
+    await customerDoc.updateOne({ $pull: { pets: { $eq: pet._id } } });
+
+    await pet.deleteOne();
+
     return pet._id;
   }
-
-
-  /**
-   * Поиск питомца по части имени в БД
-   * @param query 
-   * @returns 
-   */
-  async search(query: string): Promise<Pet[]> {
-
-    const tracks = await this.petModel.find({
-      name: { $regex: new RegExp(query, 'i') },
-    });
-
-    return tracks;
-  }
-
 
   /**
    * Обновление информации о питомце

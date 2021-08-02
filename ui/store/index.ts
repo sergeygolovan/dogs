@@ -1,15 +1,23 @@
-import { Context, createWrapper, MakeStore } from "next-redux-wrapper";
-import { AnyAction, applyMiddleware, createStore } from "redux";
-import { reducer, RootState } from "./reducers";
-import logger from 'redux-logger';
-import thunk, { ThunkAction, ThunkDispatch } from "redux-thunk";
+import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
+import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import petCollectionReducer, { petCollectionAdapter, petCollectionSlice } from "./features/pets/petCollection.slice";
 
-const makeStore: MakeStore<RootState> = (context: Context) =>
-  createStore(
-      reducer, 
-      applyMiddleware(logger, thunk)
-);
+export const store = configureStore({
+  reducer: {
+    [petCollectionSlice.name]: petCollectionReducer
+  },
+});
 
-export const wrapper = createWrapper<RootState>(makeStore, { debug: true });
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 
-export type NextThunkDispatch = ThunkDispatch<RootState, void, AnyAction>;
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export const petCollectionSelectors = petCollectionAdapter.getSelectors<RootState>((state) => state.pets);

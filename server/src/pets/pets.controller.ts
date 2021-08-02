@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -16,6 +17,7 @@ import {
   FileInterceptor,
 } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiParam, ApiTags } from '@nestjs/swagger';
+import { isMongoId } from 'class-validator';
 import { ObjectId } from 'mongoose';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { UpdatePetDto } from './dto/update-pet.dto';
@@ -60,17 +62,17 @@ export class PetsController {
     return this.petsService.getAll();
   }
 
-  @Get('/search')
-  search(@Query('query') query: string) {
-    return this.petsService.search(query);
-  }
-
   @ApiParam({
     name: 'id',
     required: true,
   })
   @Get(':id')
   getOne(@Param('id') id: ObjectId) {
+
+    if (! isMongoId(id)) {
+      throw new BadRequestException(`Указан некорректный идентификатор документа! (${id})`)
+    }
+
     return this.petsService.getOne(id);
   }
 
@@ -80,6 +82,11 @@ export class PetsController {
   })
   @Delete(':id')
   delete(@Param('id') id: ObjectId) {
+
+    if (! isMongoId(id)) {
+      throw new BadRequestException(`Указан некорректный идентификатор документа! (${id})`)
+    }
+
     return this.petsService.delete(id);
   }
 }

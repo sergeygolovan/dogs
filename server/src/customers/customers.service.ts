@@ -45,14 +45,16 @@ export class CustomersService {
    */
   async getAll(): Promise<Customer[]> {
     const customers = await this.customerModel
-      .find(null, ["_id", "name", "image", "contacts", "rating"]);
+      .find(
+        //null, ["_id", "name", "image", "contacts", "rating"]
+      );
 
     return customers;
   }
 
 
   /**
-   * 
+   * Получение информации о выбранном клиенте из БД
    * @param id 
    * @returns 
    */
@@ -88,21 +90,9 @@ export class CustomersService {
         throw new BadRequestException(`Невозможно удалить клиента, для которого были сформированы заказы! (${customer.orders.join(', ')})`)
       }
 
+      await customer.deleteOne();
+
     return customer._id;
-  }
-
-
-  /**
-   * Поиск данных о клиентах по имени в БД
-   * @param query 
-   * @returns 
-   */
-  async search(query: string): Promise<Customer[]> {
-    const customers = await this.customerModel.find({
-      name: { $regex: new RegExp(query, 'i') },
-    });
-
-    return customers;
   }
 
 

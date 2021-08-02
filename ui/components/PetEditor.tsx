@@ -44,7 +44,7 @@ export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
     character: "",
     diseases: "",
     comments: "",
-    owners: ""
+    customer: ""
   };
 
   const [fieldsState, dispatch] = useReducer(
@@ -61,7 +61,7 @@ export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
             character: item?.character || "",
             diseases: item?.diseases || "",
             comments: item?.comments || "",
-            owners: item?.owners || ""
+            customer: item?.customer || ""
           };
         case "attachImage":
           return { ...prevState, image: action.payload };

@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -17,6 +18,7 @@ import { ObjectId } from 'mongoose';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { CustomersService } from './customers.service';
+import { isMongoId } from 'class-validator';
 
 @ApiTags('customers')
 @Controller('customers')
@@ -57,17 +59,17 @@ export class CustomersController {
     return this.customersService.getAll();
   }
 
-  @Get('/search')
-  search(@Query('query') query: string) {
-    return this.customersService.search(query);
-  }
-
   @ApiParam({
     name: 'id',
     required: true,
   })
   @Get(':id')
   getOne(@Param('id') id: ObjectId) {
+
+    if (! isMongoId(id)) {
+      throw new BadRequestException(`Указан некорректный идентификатор документа! (${id})`)
+    }
+
     return this.customersService.getOne(id);
   }
 
@@ -77,6 +79,11 @@ export class CustomersController {
   })
   @Delete(':id')
   delete(@Param('id') id: ObjectId) {
+
+    if (! isMongoId(id)) {
+      throw new BadRequestException(`Указан некорректный идентификатор документа! (${id})`)
+    }
+
     return this.customersService.delete(id);
   }
 }

@@ -11,7 +11,8 @@ import * as path from 'path';
   imports: [
     ServeStaticModule.forRoot({rootPath: path.resolve(__dirname, 'static')}),
     MongooseModule.forRoot(
-      'mongodb+srv://sergeygolovan:9Q6df6uuwdDwJzBh@cluster0.usgdn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+      'mongodb://localhost:27017/dogs',
+      //'mongodb+srv://sergeygolovan:9Q6df6uuwdDwJzBh@cluster0.usgdn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
       {
         useFindAndModify: false
       }

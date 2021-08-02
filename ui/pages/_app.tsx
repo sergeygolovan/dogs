@@ -1,9 +1,12 @@
 import React, {FC} from 'react';
 import {AppProps} from 'next/app';
-import {wrapper} from "../store";
+import { Provider } from 'react-redux';
+import { store } from '../store';
 
 const WrappedApp: FC<AppProps> = ({Component, pageProps}) => (
-    <Component {...pageProps} />
+    <Provider store={store}>
+      <Component {...pageProps} />
+    </Provider>
 );
 
-export default wrapper.withRedux(WrappedApp);
+export default WrappedApp;

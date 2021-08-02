@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { FC } from "react";
 import PetEditor from "../../components/PetEditor";
 import MainLayout from "../../layouts/MainLayout";
-import { NextThunkDispatch, wrapper } from "../../store";
+// import { NextThunkDispatch, wrapper } from "../../store";
 //import { reset } from "../../store/creators";
 
 const CreatePetPage: FC = () => {

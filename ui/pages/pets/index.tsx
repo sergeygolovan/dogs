@@ -2,8 +2,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import PetCollection from "../../components/PetCollection";
 import MainLayout from "../../layouts/MainLayout";
-import { NextThunkDispatch, wrapper } from "../../store";
-import { fetchPetCollection } from "../../store/creators";
 
 const PetsPage = () => {
 
@@ -17,10 +15,3 @@ const PetsPage = () => {
 };
 
 export default PetsPage;
-
-export const getServerSideProps = wrapper.getServerSideProps(
-  async ({ store }) => {
-    const dispatch = store.dispatch as NextThunkDispatch;
-    await dispatch(await fetchPetCollection());
-  }
-);

@@ -1,8 +1,7 @@
 import { FC } from "react";
 import MainLayout from "../../layouts/MainLayout";
 import PetEditor from "../../components/PetEditor";
-import { NextThunkDispatch, wrapper } from "../../store";
-import { fetchPet } from "../../store/creators";
+import { fetchPet } from "../../_store/creators";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { useRouter } from "next/router";
 
@@ -22,10 +21,10 @@ const PetPage: FC = () => {
 
 export default PetPage;
 
-export const getServerSideProps = wrapper.getServerSideProps(
-  async ({ store, params }) => {
-    if (typeof params?.id === 'string') {
-      await (store.dispatch as NextThunkDispatch)(await fetchPet(params.id));
-    }
-  }
-);
+// export const getServerSideProps = wrapper.getServerSideProps(
+//   async ({ store, params }) => {
+//     if (typeof params?.id === 'string') {
+//       await (store.dispatch as NextThunkDispatch)(await fetchPet(params.id));
+//     }
+//   }
+// );

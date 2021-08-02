@@ -1,6 +1,6 @@
 export default interface IPet {
     _id: string;
-    name?: string;
+    name: string;
     image?: string;
     rating?: number;
     breed?: string;
@@ -8,7 +8,10 @@ export default interface IPet {
     character?: string;
     diseases?: string;
     comments?: string;
-    owners?: string;
+    customer: string;
+    orders: string[];
 }
 
-export type IPetFields = Omit<IPet, "_id">;
+export type PetCreateData = Omit<IPet, "_id">;
+
+export type PetUpdateData = Pick<IPet, "_id"> & Partial<Omit<IPet, "_id" | "customer" | "orders">>;
