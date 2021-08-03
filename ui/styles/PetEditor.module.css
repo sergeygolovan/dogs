@@ -2,14 +2,20 @@
   padding: 85px 0 0 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 250px;
+  grid-template-rows: 300px;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
   font-family: "Roboto";
 }
 
+.progress {
+  grid-area: 4 / 1 / 5 / 6;
+  width: 100%;
+}
+
 .avatar {
   grid-area: 1 / 1 / 2 / 2;
+  padding: 0 50px;
   margin: 10px 0;
 }
 
@@ -29,7 +35,7 @@
 }
 
 .general {
-  padding: 25px;
+  padding: 25px 0;
   grid-area: 1 / 2 / 2 / 5;
 }
 
@@ -41,6 +47,7 @@
 .toolbar {
   text-align: end;
   grid-area: 6 / 1 / 7 / 5;
+  margin-top: 10px;
   margin-bottom: 25px;
 }
 
@@ -71,6 +78,10 @@
     padding: 70px 0 0 0;
     display: block;
     grid-row-gap: 20px;
+  }
+
+  .avatar {
+    padding: 0;
   }
 
   .items {

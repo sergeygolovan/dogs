@@ -1,4 +1,4 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, Update } from "@reduxjs/toolkit";
 import axios from "axios";
 import IPet, { PetCreateData, PetUpdateData } from "../../types/pet";
 
@@ -34,6 +34,11 @@ export const fetchPet = createAsyncThunk<
       const response = await axios.get<IPet>(
         `${process.env.NEXT_PUBLIC_SERVICE_URL}/pets/${id}`
       );
+
+      if (! response.data?._id) {
+        return rejectWithValue("Запрошенный элемент не найден!")
+      }
+
       return response.data;
     } catch (e) {
       return rejectWithValue(e.message);
@@ -50,6 +55,9 @@ export const createPet = createAsyncThunk<
   { rejectValue: string }
 >("petCollection/createPet", async (petData, { rejectWithValue }) => {
   try {
+
+    console.log(`petData: `, petData);
+
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -70,11 +78,14 @@ export const createPet = createAsyncThunk<
  * Запрос на обновление записи о питомце
  */
 export const updatePet = createAsyncThunk<
-  IPet,
+  Update<IPet>,
   PetUpdateData,
   { rejectValue: string }
 >("petCollection/updatePet", async (petData, { rejectWithValue }) => {
   try {
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -85,7 +96,7 @@ export const updatePet = createAsyncThunk<
       data
     );
 
-    return response.data;
+    return { id: response.data._id, changes: petData };
   } catch (e) {
     return rejectWithValue(e.message);
   }
@@ -100,6 +111,9 @@ export const deletePet = createAsyncThunk<
   { rejectValue: string }
 >("petCollection/deletePet", async (id, { rejectWithValue }) => {
   try {
+
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
     const response = await axios.delete<string>(
       `${process.env.NEXT_PUBLIC_SERVICE_URL}/pets/${id}`
     );

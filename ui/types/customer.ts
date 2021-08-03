@@ -7,8 +7,10 @@ export default interface ICustomer {
     discount?: number;
     address?: string;
     comments?: string;
+    pets: string[];
+    orders: string[];
 }
 
-export type CustomerCreateData = Omit<ICustomer, "_id">;
+export type CustomerCreateData = Omit<ICustomer, "_id" | "pets" | "orders">;
 
-export type CustomerUpdateData = Pick<ICustomer, "_id"> & Partial<ICustomer>;
+export type CustomerUpdateData = Pick<ICustomer, "_id"> & Partial<Omit<ICustomer, "_id" | "pets" | "orders">>;

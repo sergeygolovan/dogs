@@ -1,174 +1,144 @@
-import {
-  ChangeEvent,
-  FC,
-  SyntheticEvent,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-} from "react";
-import Avatar from "@material-ui/core/Avatar";
-import Rating from "@material-ui/core/Rating";
+import React, { FC } from "react";
 import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
+import Rating from "@material-ui/core/Rating";
 import styles from "../styles/PetEditor.module.css";
-import { useTypedSelector } from "../hooks/useTypedSelector";
-import { useActions } from "../hooks/useActions";
-import { AnyAction } from "redux";
-import router, { useRouter } from "next/router";
-import ErrorDialog from "./ErrorDialog";
+import { useRouter } from "next/router";
+import IPet, { PetCreateData, PetUpdateData } from "../types/pet";
+import { useFormik } from "formik";
+import { useAppDispatch, useAppSelector } from "../store";
+import { useSelector, useStore } from "react-redux";
+import AvatarUploader from "./AvatarUploader";
+import Button from "@material-ui/core/Button";
+import {
+  createPet,
+  deletePet,
+  fetchPet,
+  updatePet,
+} from "../store/actions/pet.actions";
+import CustomerSelector from "./CustomerSelector";
+import { redirect } from "next/dist/next-server/server/api-utils";
+import { Box, LinearProgress } from "@material-ui/core";
 
 export interface PetEditorProps {
-  mode: "edit" | "create";
+  id: string;
+  mode: "create" | "edit";
+  entity: IPet | null;
 }
 
-export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
-  const { item, error, message, redirectTo } = useTypedSelector(
-    (state) => state.selectedPet
+export const PetEditor: FC<PetEditorProps> = ({ id, mode, entity }) => {
+  const store = useStore();
+
+  const { redirect, loading, error, message } = useAppSelector(
+    (state) => state.pets
   );
+
+  // console.log(`Selected id: ${id}`);
+  // console.log(`Selected entity: ${JSON.stringify(entity, null, 2)}`);
 
   const router = useRouter();
 
-  if (redirectTo) {
-    router.push(redirectTo);
+  const dispatch = useAppDispatch();
+
+  if (!entity && mode === "edit") {
+    router.push("/pets");
   }
 
-  const avatarRef = useRef<HTMLInputElement>();
+  if (redirect) {
+    router.push(redirect);
+  }
 
-  const defaultValues = {
-    name: "",
-    image: "",
-    rating: 0,
-    breed: "",
-    feed: "",
-    character: "",
-    diseases: "",
-    comments: "",
-    customer: ""
-  };
-
-  const [fieldsState, dispatch] = useReducer(
-    (prevState: any, action: AnyAction) => {
-      switch (action.type) {
-        case "reset":
-          return {
-            _id: item?._id || null,
-            name: item?.name || "",
-            image: item?.image || "",
-            rating: item?.rating || 0,
-            breed: item?.breed || "",
-            feed: item?.feed || "",
-            character: item?.character || "",
-            diseases: item?.diseases || "",
-            comments: item?.comments || "",
-            customer: item?.customer || ""
-          };
-        case "attachImage":
-          return { ...prevState, image: action.payload };
-        case "update":
-          return { ...prevState, [action.payload.name]: action.payload.value };
-        default:
-          return prevState;
-      }
+  const defaultValues: PetCreateData | PetUpdateData = Object.assign(
+    {
+      name: "",
+      image: "",
+      rating: 0,
+      breed: "",
+      feed: "",
+      character: "",
+      diseases: "",
+      comments: "",
+      customer: "",
+      orders: [],
     },
-    defaultValues
+    entity
   );
 
-  useEffect(() => {
-    dispatch({ type: "reset" });
-  }, [item]);
-
-  const { createPet, updatePet, deletePet } = useActions();
-
-  const onSave = () => {
-    if (fieldsState.name) {
+  const formik = useFormik({
+    initialValues: defaultValues,
+    onSubmit: (values, { setSubmitting }) => {
       if (mode === "edit") {
-        updatePet(fieldsState);
+        dispatch(updatePet(values as PetUpdateData)).then(() => {
+          setSubmitting(false);
+        });
       } else {
-        createPet(fieldsState);
+        dispatch(createPet(values as PetCreateData)).then((action) => {
+          setSubmitting(false);
+          router.push(`/pets/${action.payload._id}`);
+        });
       }
-    }
-  };
-
-  const onDelete = () => {
-    if (item) {
-      deletePet(item._id);
-    }
-  };
-
-  const onChange = (name: string) => (e: any, value: any) => {
-    dispatch({
-      type: "update",
-      payload: {
-        name,
-        value: value || (e as ChangeEvent<HTMLInputElement>).target.value,
-      },
-    });
-  };
-
-  const onChangeAvatar = async (e: ChangeEvent<HTMLInputElement>) => {
-    let image = e.target.files?.[0];
-
-    if (image) {
-      dispatch({ type: "attachImage", payload: image });
-    }
-  };
-
-  const getAvatarProps = () => {
-    let avatarProps = {
-      alt: item?.name || "",
-      sx: { width: "200px", height: "200px" },
-      src: "",
-      children: "",
-    };
-
-    if (item?.image) {
-      avatarProps.src = `http://192.168.1.57:5000/${item.image}`;
-    } else {
-      if (item?.name) {
-        avatarProps.children = item.name.slice(0, 2).toUpperCase();
-      } else {
-        avatarProps.children = "Загрузите изображение";
-      }
-    }
-
-    return avatarProps;
-  };
+    },
+  });
 
   return (
-    <div className={styles.container}>
-      {error ? <ErrorDialog message={message} /> : null}
+    <form className={styles.container} onSubmit={formik.handleSubmit}>
       <div className={styles.avatar}>
-        <input
-          accept="image/*"
-          className={styles.hidden}
-          id="avatar-button-file"
-          type="file"
-          onChange={onChangeAvatar}
+        <AvatarUploader
+          name="image"
+          onChange={(e, file) => {
+            formik.setFieldValue("image", file, false);
+          }}
+          size="250px"
+          value={formik.values.image}
         />
-        <label htmlFor="avatar-button-file">
-          <Avatar className={styles.avatar__image} {...getAvatarProps()} />
-        </label>
         <div className={styles.avatar__rating}>
-          <Rating value={fieldsState.rating} onChange={onChange("rating")} />
+          <Box
+            sx={{
+              placeContent: "center",
+              width: "100%",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <Rating
+              precision={0.5}
+              value={formik.values.rating}
+              onChange={(e, value) => {
+                formik.setFieldValue("rating", value, false);
+              }}
+            />
+            {formik.values.rating !== 0 && (
+              <Box sx={{ ml: 2 }}>{Number.parseFloat(formik.values.rating).toFixed(1)}</Box>
+            )}
+          </Box>
         </div>
       </div>
-
       <div className={styles.general}>
         <TextField
           className={`${styles.input} ${styles.input__main}`}
           fullWidth
+          name="name"
           label="Кличка"
-          onChange={onChange("name")}
-          value={fieldsState.name}
+          onChange={formik.handleChange}
+          value={formik.values.name}
         />
 
         <TextField
           className={styles.input}
           fullWidth
+          name="breed"
           label="Порода"
-          onChange={onChange("breed")}
-          value={fieldsState.breed}
+          onChange={formik.handleChange}
+          value={formik.values.breed}
+        />
+
+        <CustomerSelector
+          name="customer"
+          label="Владелец питомца"
+          helperText="Выберите клиента из списка"
+          value={formik.values.customer}
+          onChange={(e, value) => {
+            formik.setFieldValue("customer", value, false);
+          }}
         />
       </div>
 
@@ -176,33 +146,28 @@ export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
         <TextField
           className={styles.input}
           fullWidth
-          label="Хозяева"
-          onChange={onChange("owners")}
-          value={fieldsState.owners}
-        />
-
-        <TextField
-          className={styles.input}
-          fullWidth
+          name="feed"
           label="Корм"
-          onChange={onChange("feed")}
-          value={fieldsState.feed}
+          onChange={formik.handleChange}
+          value={formik.values.feed}
         />
 
         <TextField
           className={styles.input}
           fullWidth
+          name="character"
           label="Характер"
-          onChange={onChange("character")}
-          value={fieldsState.character}
+          onChange={formik.handleChange}
+          value={formik.values.character}
         />
 
         <TextField
           className={styles.input}
           fullWidth
+          name="diseases"
           label="Хронические заболевания"
-          onChange={onChange("diseases")}
-          value={fieldsState.diseases}
+          onChange={formik.handleChange}
+          value={formik.values.diseases}
         />
 
         <TextField
@@ -210,21 +175,28 @@ export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
           fullWidth
           multiline
           rows={6}
+          name="comments"
           label="Комментарии"
-          onChange={onChange("comments")}
-          value={fieldsState.comments}
+          onChange={formik.handleChange}
+          value={formik.values.comments}
         />
       </div>
-
+      <div className={styles.progress}>
+        {loading ? <LinearProgress /> : null}
+      </div>
       <div className={styles.toolbar}>
-        {mode === "edit" ? (
+        {id !== "" ? (
           <Button
             className={styles.toolbar__button}
             variant="contained"
             size="large"
             color="error"
             disableElevation
-            onClick={onDelete}
+            onClick={async () => {
+              await dispatch(deletePet(id));
+              router.push("/pets");
+            }}
+            disabled={loading}
           >
             Удалить
           </Button>
@@ -236,12 +208,13 @@ export const PetEditor: FC<PetEditorProps> = ({ mode }) => {
           size="large"
           color="primary"
           disableElevation
-          onClick={onSave}
+          type="submit"
+          disabled={loading}
         >
-          {mode === "edit" ? "Сохранить" : "Создать"}
+          {id !== "" ? "Сохранить" : "Создать"}
         </Button>
       </div>
-    </div>
+    </form>
   );
 };
 

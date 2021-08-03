@@ -1,0 +1,12 @@
+.avatar {
+    cursor: pointer;
+    margin: 0;
+}
+
+.avatar:hover {
+    opacity: 0.8;
+}
+
+.selector {
+    width: 100%;
+}

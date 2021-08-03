@@ -18,6 +18,12 @@
     width: 100%;
 }
 
+.button {
+  padding: 50px 0;
+  margin: 20px 0;
+  border: 1px solid #d0d0d0;
+}
+
 .items {
   margin-top: 20px;
   grid-area: 2 / 2 / 6 / 6;

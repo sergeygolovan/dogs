@@ -56,6 +56,7 @@ export class CustomersController {
 
   @Get()
   getAll() {
+    this.logger.log(`Запрос на получение списка клиентов...`);
     return this.customersService.getAll();
   }
 

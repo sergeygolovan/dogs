@@ -71,7 +71,7 @@ export class PetsService {
   async getOne(id: ObjectId): Promise<Pet> {
     const pet = await this.petModel
       .findById(id)
-      .populate("customer", ["_id", "name", "image", "contacts", "rating"]);
+      // .populate("customer", ["_id", "name", "image", "contacts", "rating"]);
 
     return pet;
   }

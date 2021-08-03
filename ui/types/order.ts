@@ -10,6 +10,6 @@ export default interface IOrder {
     pets: string[];
 }
 
-export type OrderCreateData = Omit<IOrder, "_id">;
+export type OrderCreateData = Omit<IOrder, "_id" | "status">;
 
-export type OrderUpdateData = Pick<IOrder, "_id"> & Partial<IOrder>;
+export type OrderUpdateData = Pick<IOrder, "_id"> & Partial<Omit<IOrder, "customer" | "pets">>;

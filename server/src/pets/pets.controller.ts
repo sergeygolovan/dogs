@@ -69,6 +69,8 @@ export class PetsController {
   @Get(':id')
   getOne(@Param('id') id: ObjectId) {
 
+    this.logger.log(`Запрос данных о питомце с идентификатором ${id}`);
+
     if (! isMongoId(id)) {
       throw new BadRequestException(`Указан некорректный идентификатор документа! (${id})`)
     }

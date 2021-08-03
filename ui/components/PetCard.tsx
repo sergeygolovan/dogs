@@ -19,14 +19,17 @@ const PetCard: FC<IPet> = (props) => {
         {props.image ? <CardMedia
           className={styles.avatar}
           sx={{ height: 140 }}
-          image={`http://192.168.1.57:5000/${props.image}`}
+          image={`${process.env.NEXT_PUBLIC_SERVICE_URL}/${props.image}`}
           title={props.name}
         />: null}
         <CardContent className={styles.content}>
           <Typography gutterBottom variant="h5" component="div">
             {props.name}
           </Typography>
-          <Rating value={props.rating} readOnly />
+          <Rating 
+          precision={0.5}
+          value={props.rating} 
+          readOnly />
           <Typography variant="body2" color="text.secondary">
             {props.comments}
           </Typography>
