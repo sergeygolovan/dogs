@@ -2,6 +2,8 @@ import { createAsyncThunk, Update } from "@reduxjs/toolkit";
 import axios from "axios";
 import IPet, { PetCreateData, PetUpdateData } from "../../types/pet";
 
+const timeoutPromise = async (timeout: number) => new Promise(resolve => setTimeout(resolve, timeout));
+
 /**
  * Запрос списка питомцев
  */
@@ -56,6 +58,8 @@ export const createPet = createAsyncThunk<
 >("petCollection/createPet", async (petData, { rejectWithValue }) => {
   try {
 
+    await timeoutPromise(500);
+
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -82,6 +86,8 @@ export const updatePet = createAsyncThunk<
 >("petCollection/updatePet", async (petData, { rejectWithValue }) => {
   try {
 
+    await timeoutPromise(500);
+
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -107,6 +113,8 @@ export const deletePet = createAsyncThunk<
   { rejectValue: string }
 >("petCollection/deletePet", async (id, { rejectWithValue }) => {
   try {
+
+    await timeoutPromise(500);
 
     const response = await axios.delete<string>(
       `${process.env.NEXT_PUBLIC_SERVICE_URL}/pets/${id}`

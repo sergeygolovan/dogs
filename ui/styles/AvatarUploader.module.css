@@ -1,8 +1,11 @@
 
   .avatar__image {
+    box-shadow: 0px 0px 0 1px #d0d0d0;
     margin: auto;
     cursor: pointer;
     text-align: center;
+    background: none !important;
+    color: #bdbdbd;
   }
   
   .hidden {

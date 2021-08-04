@@ -66,7 +66,10 @@
 }
 
 .text {
-  padding: 25px;
+  padding: 20px;
+  border: 1px solid #d0d0d0;
+  border-radius: 7px;
+
 }
 
 .input.input__main input {

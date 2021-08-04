@@ -14,3 +14,9 @@
 .selector {
     width: 100%;
 }
+
+.selector div > * {
+    color: rgba(0, 0, 0, 1) !important;
+    -webkit-text-fill-color: rgba(0, 0, 0, 1);
+}
+

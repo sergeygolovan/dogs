@@ -5,6 +5,7 @@ import { Order } from 'src/orders/schema/order.schema';
 
 export type PetDocument = Pet & mongoose.Document;
 
+@Schema()
 export class Pet {
   @Prop({ type: String, required: true })
   name: string;

@@ -13,6 +13,12 @@ export default function MainMenu() {
       href: "/pets",
     },
     {
+      title: "База клиентов",
+      description: "Просмотр и редактирование картотеки клиентов",
+      href: "/customers",
+      enabled: false
+    },
+    {
       title: "Создать заказ",
       description: "Быстрое создание заказа, карточки клиента и анкет питомцев",
       href: "/orders/create",
@@ -30,12 +36,6 @@ export default function MainMenu() {
       href: "/calendar",
       enabled: false
     },
-    {
-      title: "База клиентов",
-      description: "Просмотр и редактирование картотеки клиентов",
-      href: "/customers",
-      enabled: false
-    }
   ];
 
   return (

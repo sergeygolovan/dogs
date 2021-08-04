@@ -42,10 +42,11 @@ function AvatarUploader(props: {
       />
       <label htmlFor={props.name}>
         <Avatar
+          variant="rounded"
           className={styles.avatar__image}
           src={src}
           sx={{ width: props.size, height: props.size }}
-        >{!imagePath && "Прикрепить фото"}</Avatar>
+        >{!imagePath && "Загрузить фото"}</Avatar>
       </label>
     </>
   );

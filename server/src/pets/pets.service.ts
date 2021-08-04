@@ -84,8 +84,7 @@ export class PetsService {
    */
   async delete(id: ObjectId): Promise<ObjectId> {
 
-    const pet = await this.petModel.findById(id, ["orders", "customer"])
-      .populate("orders", "_id");
+    const pet = await this.petModel.findById(id, ["orders", "customer"]);
 
     if (!pet) {
       throw new BadRequestException(`Невозможно удалить питомца с несуществующим идентификатором! (${id})`)

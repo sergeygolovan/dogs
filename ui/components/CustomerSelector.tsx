@@ -64,27 +64,13 @@ const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, help
           sx={{ width: "56px", height: "56px" }}
         />
         </Link>
-        {/* <FormControl className={styles.selector} sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="selectorLabel">{label}</InputLabel>
-          <Select
-            labelId="selectorLabel"
-            id="customerSelector"
-            name={name}
-            value={selectedId}
-            label={label}
-            onChange={handleChange}
-            readOnly={disabled}
-          >
-            {items}
-          </Select>
-          {helperText && !disabled && <FormHelperText>{helperText}</FormHelperText>}
-        </FormControl> */}
         <TextField
           className={styles.selector}
           select
           error={error}
           label={label}
           name={name}
+          value={selectedId}
           onChange={handleChange}
           onBlur={onBlur || (() => {})}
           helperText={!disabled && helperText}

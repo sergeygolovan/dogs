@@ -16,12 +16,12 @@ const PetCard: FC<IPet> = (props) => {
   return (
     <Card sx={{ maxWidth: 345 }} className={styles.container}>
       <CardActionArea onClick={() => router.push(`pets/${props._id}`)}>
-        {props.image && <CardMedia
+        <CardMedia
           className={styles.avatar}
           sx={{ height: 140 }}
-          image={`${process.env.NEXT_PUBLIC_SERVICE_URL}/${props.image}`}
+          image={props.image ? `${process.env.NEXT_PUBLIC_SERVICE_URL}/${props.image}` : '#'}
           title={props.name}
-        />}
+        />
         <CardContent className={styles.content}>
           <Typography className={styles.content__title} gutterBottom variant="h5" component="div">
             {props.name}

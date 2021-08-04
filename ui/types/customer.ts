@@ -12,6 +12,6 @@ export default interface ICustomer {
     orders: string[];
 }
 
-export type CustomerCreateData = Omit<ICustomer, "_id" | "pets" | "orders">;
+export type CustomerCreateData = Omit<ICustomer, "_id">;
 
 export type CustomerUpdateData = Pick<ICustomer, "_id"> & Partial<Omit<ICustomer, "_id" | "pets" | "orders">>;
