@@ -50,10 +50,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap"
           rel="stylesheet"
         ></link>
+        <link
+          href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap"
+          rel="stylesheet"
+        ></link>
       </Head>
       <AppBar position="fixed" className={styles.toolbar}>
         <Toolbar>
-          {showBackButton ? (
+          {showBackButton && (
             <IconButton
               size="large"
               edge="start"
@@ -63,7 +67,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
             >
               <ArrowBackIcon />
             </IconButton>
-          ) : null}
+          )}
           <Stack spacing={2} direction="row" className={styles.nav}>
             {/* <Button variant="contained" size={"large"} color="success" disableElevation onClick={onNavTo("/orders/create")}>Создать заказ</Button> */}
             <Button variant="contained" disableElevation onClick={onNavTo("/pets")}>База питомцев</Button>

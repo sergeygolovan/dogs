@@ -56,8 +56,8 @@ export class PetsService {
 
     const pets = await this.petModel
       .find(
-        // null, 
-        // ["_id", "name", "image", "comments", "rating"]
+        null, 
+        ["-__v"]
       );
     return pets;
   }
@@ -70,7 +70,7 @@ export class PetsService {
    */
   async getOne(id: ObjectId): Promise<Pet> {
     const pet = await this.petModel
-      .findById(id)
+      .findById(id, ["-__v"])
       // .populate("customer", ["_id", "name", "image", "contacts", "rating"]);
 
     return pet;

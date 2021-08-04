@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import ICustomer from "../types/customer";
 import Select, { SelectChangeEvent } from "@material-ui/core/Select";
 import {
@@ -8,12 +8,24 @@ import {
   InputLabel,
   MenuItem,
   Stack,
+  TextField,
 } from "@material-ui/core";
 import { customerCollectionSelectors, useAppSelector } from "../store";
 import styles from "../styles/CustomerSelector.module.css";
 import Link from "next/link";
 
-function CustomerSelector({ value, name, label, helperText, onChange }) {
+interface ICustomerSelectorProps {
+  value: string;
+  name: string;
+  label: string;
+  helperText: string;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onBlur?: React.FocusEventHandler<HTMLInputElement>;
+  disabled?: boolean;
+  error?: boolean;
+}
+
+const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, helperText, onChange, onBlur, disabled = false, error = false }) => {
   const entities = useAppSelector(customerCollectionSelectors.selectAll);
 
   const [selectedId, setSelectedId] = useState(value || "");
@@ -36,36 +48,50 @@ function CustomerSelector({ value, name, label, helperText, onChange }) {
     ))
   );
 
-  const handleChange = (event: SelectChangeEvent) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedId(event.target.value);
-    onChange(event, event.target.value);
+    onChange(event);
   };
 
   return (
-    <div>
+    <div className={styles.container}>
       <Stack direction="row" spacing={2}>
         <Link href={selectedId ? `/customers/${selectedId}` : ''}>
         <Avatar
           className={styles.avatar}
           variant="rounded"
           src={imagePath}
-          sx={{ width: "75px", height: "75px" }}
+          sx={{ width: "56px", height: "56px" }}
         />
         </Link>
-        <FormControl className={styles.selector} sx={{ m: 1, minWidth: 120 }}>
-          <InputLabel id="demo-simple-select-helper-label">{label}</InputLabel>
+        {/* <FormControl className={styles.selector} sx={{ m: 1, minWidth: 120 }}>
+          <InputLabel id="selectorLabel">{label}</InputLabel>
           <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
+            labelId="selectorLabel"
+            id="customerSelector"
             name={name}
             value={selectedId}
             label={label}
             onChange={handleChange}
+            readOnly={disabled}
           >
             {items}
           </Select>
-          {helperText ? <FormHelperText>{helperText}</FormHelperText> : null}
-        </FormControl>
+          {helperText && !disabled && <FormHelperText>{helperText}</FormHelperText>}
+        </FormControl> */}
+        <TextField
+          className={styles.selector}
+          select
+          error={error}
+          label={label}
+          name={name}
+          onChange={handleChange}
+          onBlur={onBlur || (() => {})}
+          helperText={!disabled && helperText}
+          disabled={disabled}
+        >
+          {items}
+        </TextField>
       </Stack>
     </div>
   );

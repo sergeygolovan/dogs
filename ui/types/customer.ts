@@ -1,6 +1,7 @@
 export default interface ICustomer {
     _id: string;
     name: string;
+    registrationDate: string;
     contacts: string;
     image?: string;
     rating?: number;

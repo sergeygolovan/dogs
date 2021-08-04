@@ -16,7 +16,7 @@
 .avatar {
   grid-area: 1 / 1 / 2 / 2;
   padding: 0 50px;
-  margin: 10px 0;
+  margin: 20px 0;
 }
 
 .avatar__image {
@@ -32,6 +32,11 @@
 .avatar__rating {
   text-align: center;
   margin: 10px 0;
+}
+
+.divider {
+  margin: 50px 0 10px 0;
+  text-transform: uppercase;
 }
 
 .general {
@@ -57,10 +62,15 @@
 
 .input {
 
-  margin: 20px 0;
+  margin: 10px 0 15px 0;
+}
+
+.text {
+  padding: 25px;
 }
 
 .input.input__main input {
+  font-size: 20px;
   font-weight: bold;
 }
 

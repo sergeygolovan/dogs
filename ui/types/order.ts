@@ -4,10 +4,10 @@ export default interface IOrder {
     dateTimeFrom: Date;
     dateTimeTo: Date;
     rate: number;
-    deposit?: number;
-    comments?: string;
     customer: string;
     pets: string[];
+    deposit?: number;
+    comments?: string;
 }
 
 export type OrderCreateData = Omit<IOrder, "_id" | "status">;

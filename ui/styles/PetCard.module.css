@@ -3,6 +3,10 @@
   overflow: hidden;
 }
 
+.content__title {
+  font-weight: 700;
+}
+
 .content p {
   overflow: hidden;
   max-height: 40px;

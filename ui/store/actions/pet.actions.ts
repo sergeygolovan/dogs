@@ -56,8 +56,6 @@ export const createPet = createAsyncThunk<
 >("petCollection/createPet", async (petData, { rejectWithValue }) => {
   try {
 
-    console.log(`petData: `, petData);
-
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -84,8 +82,6 @@ export const updatePet = createAsyncThunk<
 >("petCollection/updatePet", async (petData, { rejectWithValue }) => {
   try {
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
     const data = new FormData();
     Object.keys(petData).forEach((field) =>
       data.append(field, (<any>petData)[field])
@@ -111,8 +107,6 @@ export const deletePet = createAsyncThunk<
   { rejectValue: string }
 >("petCollection/deletePet", async (id, { rejectWithValue }) => {
   try {
-
-    await new Promise(resolve => setTimeout(resolve, 2000));
 
     const response = await axios.delete<string>(
       `${process.env.NEXT_PUBLIC_SERVICE_URL}/pets/${id}`

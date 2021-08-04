@@ -9,6 +9,9 @@ export class Customer {
   @Prop({ type: String, required: true })
   name: string;
 
+  @Prop({ type: String, required: false })
+  registrationDate: string;
+
   @Prop({ required: false })
   image: string;
 

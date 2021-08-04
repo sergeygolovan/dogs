@@ -49,7 +49,7 @@ const PetCollection: FC = () => {
               size="large"
               onClick={() => router.push("/pets/create")}
             >
-              Создать карточку питомца
+              Добавить карточку питомца
             </Button>
           </div>
           <div className={styles.items}>

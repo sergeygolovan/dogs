@@ -45,7 +45,7 @@ function AvatarUploader(props: {
           className={styles.avatar__image}
           src={src}
           sx={{ width: props.size, height: props.size }}
-        >{!imagePath ? "Прикрепить фото" : null}</Avatar>
+        >{!imagePath && "Прикрепить фото"}</Avatar>
       </label>
     </>
   );

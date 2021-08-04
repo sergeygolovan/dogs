@@ -53,7 +53,7 @@ export class OrdersService {
    * @returns 
    */
   async getAll(): Promise<Order[]> {
-    const orders = await this.orderModel.find();
+    const orders = await this.orderModel.find(null, ["-__v"]);
     return orders;
   }
 
@@ -65,9 +65,9 @@ export class OrdersService {
    */
   async getOne(id: ObjectId): Promise<Order> {
     const order = await this.orderModel
-      .findById(id)
-      .populate("customer", ["_id", "name", "image", "contacts"])
-      .populate("pets", ["_id", "name", "image"]);
+      .findById(id, ["-__v"])
+      //.populate("customer", ["_id", "name", "image", "contacts"])
+      //.populate("pets", ["_id", "name", "image"]);
 
     return order;
   }

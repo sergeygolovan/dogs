@@ -1,6 +1,9 @@
 export default interface IPet {
     _id: string;
     name: string;
+    registrationDate: string;
+    customer: string;
+    orders: string[];
     image?: string;
     rating?: number;
     breed?: string;
@@ -8,8 +11,6 @@ export default interface IPet {
     character?: string;
     diseases?: string;
     comments?: string;
-    customer: string;
-    orders: string[];
 }
 
 export type PetCreateData = Omit<IPet, "_id">;

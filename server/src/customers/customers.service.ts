@@ -45,9 +45,7 @@ export class CustomersService {
    */
   async getAll(): Promise<Customer[]> {
     const customers = await this.customerModel
-      .find(
-        //null, ["_id", "name", "image", "contacts", "rating"]
-      );
+      .find(null, ["-__v"]);
 
     return customers;
   }
@@ -60,8 +58,8 @@ export class CustomersService {
    */
   async getOne(id: ObjectId): Promise<Customer> {
     const customer = await this.customerModel
-      .findById(id)
-      .populate("pets", ["_id", "name", "image", "rating"]);
+      .findById(id, ["-__v"])
+      //.populate("pets", ["_id", "name", "image", "rating"]);
 
     return customer;
   }

@@ -10,6 +10,10 @@ export class CreatePetDto extends OmitType(UpdatePetDto, ["_id"] as const) {
     name: string;
 
     @Allow()
+    @IsString()
+    registrationDate: string;
+
+    @Allow()
     @IsMongoId()
     customer: mongoose.Schema.Types.ObjectId;
 }

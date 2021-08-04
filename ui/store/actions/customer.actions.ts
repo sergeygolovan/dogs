@@ -16,7 +16,6 @@ export const fetchCustomerCollection = createAsyncThunk<
   "customerCollection/fetchCustomerCollection",
   async (_, { rejectWithValue }) => {
     try {
-      console.log(`FETCH CUSTOMER COLLECTION!`)
       const response = await axios.get<ICustomer[]>(
         `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers`
       );
