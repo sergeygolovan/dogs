@@ -1,0 +1,33 @@
+.container {
+  display: grid;
+  grid-template-columns: 70% calc(20% - 40px) 10%;
+}
+
+.search {
+}
+
+.selector {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.sorter {
+  margin-left: 40px;
+}
+
+@media (max-width: 800px) {
+  .container {
+    padding: 70px 0 0 0;
+    display: block;
+  }
+
+  .selector {
+    margin: 20px 0 0 0;
+    width: 50%;
+  }
+
+  .sorter {
+    margin: 20px 0 0 20px;
+    width: calc(50% - 20px);
+  }
+}

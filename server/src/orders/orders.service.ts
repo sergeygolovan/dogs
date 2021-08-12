@@ -12,7 +12,6 @@ import { Order, OrderDocument } from './schema/order.schema';
 
 @Injectable()
 export class OrdersService {
-
   private readonly logger = new Logger(OrdersService.name);
 
   constructor(
@@ -22,21 +21,19 @@ export class OrdersService {
     private readonly fileService: FilesService,
   ) {}
 
-
   /**
    * Создание записи о заказе в БД
-   * @param createOrderDto 
-   * @returns 
+   * @param createOrderDto
+   * @returns
    */
-  async create(
-    createOrderDto: CreateOrderDto
-  ): Promise<Order> {
-
+  async create(createOrderDto: CreateOrderDto): Promise<Order> {
     const order = await this.orderModel.create({
       ...createOrderDto,
     });
 
-    const customerDoc = (await this.customersService.getOne(createOrderDto.customer)) as CustomerDocument;
+    const customerDoc = (await this.customersService.getOne(
+      createOrderDto.customer,
+    )) as CustomerDocument;
     await customerDoc.updateOne({ $push: { orders: order._id } });
 
     for (let _id of createOrderDto.pets) {
@@ -47,46 +44,51 @@ export class OrdersService {
     return order;
   }
 
-
   /**
    * Получение списка всех заказов из БД
-   * @returns 
+   * @returns
    */
   async getAll(): Promise<Order[]> {
-    const orders = await this.orderModel.find(null, ["-__v"]);
+    const orders = await this.orderModel.find(null, ['-__v']);
     return orders;
   }
 
-
   /**
    * Получение информации о выбранном заказе из БД
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   async getOne(id: ObjectId): Promise<Order> {
-    const order = await this.orderModel
-      .findById(id, ["-__v"])
-      //.populate("customer", ["_id", "name", "image", "contacts"])
-      //.populate("pets", ["_id", "name", "image"]);
+    const order = await this.orderModel.findById(id, ['-__v']);
+    //.populate("customer", ["_id", "name", "image", "contacts"])
+    //.populate("pets", ["_id", "name", "image"]);
+
+    if (!order) {
+      throw new BadRequestException(
+        `Данные о заказе с указанным идентификатором не обнаружены! (${id})`,
+      );
+    }
 
     return order;
   }
 
-
   /**
    * Удаление информации о заказе из БД
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   async delete(id: ObjectId): Promise<ObjectId> {
-    const order = await this.orderModel
-      .findById(id);
+    const order = await this.orderModel.findById(id);
 
     if (!order) {
-      throw new BadRequestException(`Невозможно удалить заказ с несуществующим идентификатором! (${id})`)
+      throw new BadRequestException(
+        `Невозможно удалить заказ с несуществующим идентификатором! (${id})`,
+      );
     }
 
-    const customerDoc = (await this.customersService.getOne(order.customer)) as CustomerDocument;
+    const customerDoc = (await this.customersService.getOne(
+      order.customer,
+    )) as CustomerDocument;
     await customerDoc.updateOne({ $pull: { orders: { $eq: order._id } } });
 
     for (let _id of order.pets) {
@@ -94,19 +96,21 @@ export class OrdersService {
       await petDoc.updateOne({ $pull: { orders: { $eq: order._id } } });
     }
 
+    await order.deleteOne();
+
     return order._id;
   }
 
   /**
    * Обновление информации о заказе в БД
-   * @param updateOrderDto 
-   * @returns 
+   * @param updateOrderDto
+   * @returns
    */
   async update(updateOrderDto: UpdateOrderDto): Promise<Order> {
-    const { _id, ...dto} = updateOrderDto;
+    const { _id, ...dto } = updateOrderDto;
 
     const order = await this.orderModel.findByIdAndUpdate(_id, {
-      ...dto
+      ...dto,
     });
 
     return order;

@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import PetCollection from "../../components/PetCollection";
 import MainLayout from "../../layouts/MainLayout";
 import { AppDispatch, wrapper } from "../../store";
+import { fetchCustomerCollection } from "../../store/actions/customer.actions";
 import { fetchPetCollection } from "../../store/actions/pet.actions";
 import IPet from "../../types/pet";
 
@@ -26,11 +27,26 @@ export default PetsPage;
 
 export const getServerSideProps: GetServerSideProps =
   wrapper.getServerSideProps(async ({ store }) => {
-    const action = await (store.dispatch as AppDispatch)(fetchPetCollection());
 
-    return {
-      props: {
-        pets: action.meta.requestStatus !== "rejected" ? (action.payload as IPet[]) : []
+    try {
+      await (store.dispatch as AppDispatch)(fetchCustomerCollection());
+
+      const action = await (store.dispatch as AppDispatch)(fetchPetCollection());
+
+      return {
+        props: {
+          pets: action.meta.requestStatus !== "rejected" ? (action.payload as IPet[]) : []
+        }
+      }
+    } catch (e) {
+      console.log(e);
+
+      return {
+        props: {
+          pets: []
+        }
       }
     }
+
+    
   });

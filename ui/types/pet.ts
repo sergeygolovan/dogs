@@ -1,10 +1,11 @@
 export default interface IPet {
     _id: string;
     name: string;
+    sex: string;
     registrationDate: string;
     customer: string;
     orders: string[];
-    image?: string;
+    avatar?: string;
     rating?: number;
     breed?: string;
     feed?: string;

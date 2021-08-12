@@ -13,7 +13,7 @@ export class Customer {
   registrationDate: string;
 
   @Prop({ required: false })
-  image: string;
+  avatar: string;
 
   @Prop({ type: Number, required: false, default: 0 })
   rating: number;

@@ -1,9 +1,24 @@
+.container {
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
 .toolbar {
     box-shadow: none;
 }
 
+.button {
+    margin-right: 0;
+}
 
-@media (max-width: 600px) {
+.title {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+}
+
+
+@media (max-width: 800px) {
     .nav {
         display: none;
     }

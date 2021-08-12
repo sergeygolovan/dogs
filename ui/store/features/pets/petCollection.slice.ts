@@ -1,4 +1,8 @@
-import { AnyAction, createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createEntityAdapter,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import {
   createPet,
   deletePet,
@@ -7,6 +11,7 @@ import {
   updatePet,
 } from "../../actions/pet.actions";
 import IPet from "../../../types/pet";
+import { IFilterFieldValue } from "../../../types/filter";
 import { HYDRATE } from "next-redux-wrapper";
 
 interface IPetCollectionInitialState {
@@ -14,11 +19,17 @@ interface IPetCollectionInitialState {
   loading: boolean;
   error: boolean;
   message?: string;
+  filterValues: IFilterFieldValue;
 }
 
 const petCollectionInitialState: IPetCollectionInitialState = {
   loading: false,
   error: false,
+  filterValues: {
+    query: "",
+    selectedFilterId: "name",
+    order: "asc",
+  },
 };
 
 export const petCollectionAdapter = createEntityAdapter<IPet>({
@@ -28,9 +39,21 @@ export const petCollectionAdapter = createEntityAdapter<IPet>({
 export const petCollectionSlice = createSlice({
   name: "pets",
   initialState: petCollectionAdapter.getInitialState(petCollectionInitialState),
-  reducers: {},
+  reducers: {
+    setFilterValues(state, action: PayloadAction<IFilterFieldValue>) {
+      state.filterValues = action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
+    builder.addCase(HYDRATE, (state, { payload }) => ({
+      ...state,
+      ...payload.pets,
+      loading: state.loading,
+      error:  state.error,
+      filterValues: state.filterValues,
+    }));
+
     /**
      * Обработка события получения списка всех питомцев
      */
@@ -133,4 +156,5 @@ export const petCollectionSlice = createSlice({
   },
 });
 
+export const { setFilterValues } = petCollectionSlice.actions;
 export default petCollectionSlice.reducer;

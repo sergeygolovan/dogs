@@ -1,11 +1,14 @@
 export default interface IOrder {
     _id: string;
     status: number;
-    dateTimeFrom: Date;
-    dateTimeTo: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
+    dateTimeFrom: string;
+    dateTimeTo: string;
     rate: number;
     customer: string;
     pets: string[];
+    discount?: number;
     deposit?: number;
     comments?: string;
 }

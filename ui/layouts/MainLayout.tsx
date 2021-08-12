@@ -2,19 +2,28 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import {
   AppBar,
+  BottomNavigation,
+  BottomNavigationAction,
   Button,
   Container,
   IconButton,
+  Paper,
   Stack,
   Toolbar,
   Typography,
 } from "@material-ui/core";
 import Head from "next/head";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import NoteAddIcon from "@material-ui/icons/NoteAdd";
-import SearchIcon from "@material-ui/icons/Search";
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import PetsIcon from '@material-ui/icons/Pets';
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt';
+import TodayIcon from '@material-ui/icons/Today';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import styles from "../styles/MainLayout.module.css";
 import { useRouter } from "next/router";
+import { useAppSelector } from "../store";
+import CustomSnackbar from "../components/CustomSnackbar";
+import IMessage from "../types/message";
 
 interface MainLayoutProps {
   title?: string;
@@ -30,13 +39,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({
 }) => {
   const router = useRouter();
 
-  if (!onNavBack) {
-    onNavBack = () => router.back();
-  }
-
-  const onNavTo = (path) => () => {
+  const onNavTo = (path: string) => () => {
     router.push(path);
   };
+
+  if (!onNavBack) {
+    onNavBack = _ => router.back();
+  }
+
+  const [tabName, setTabName] = React.useState('');
+
+  const handleChange = (event: React.SyntheticEvent, tabPath: string) => {
+    setTabName(tabPath);
+    router.push(tabPath);
+  };
+
+  const messages: IMessage[] = useAppSelector((state) => state.messages.queue);
+
+  let messageItems = messages.map(({ message, type, id }: IMessage, index) => (
+    <CustomSnackbar
+      key={id}
+      id={id}
+      position={index + 1}
+      type={type}
+      message={message}
+    />
+  ));
 
   return (
     <>
@@ -62,6 +90,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         <Toolbar>
           {showBackButton && (
             <IconButton
+              className={styles.button}
               size="large"
               edge="start"
               color="inherit"
@@ -71,14 +100,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({
               <ArrowBackIcon />
             </IconButton>
           )}
-          <Stack spacing={2} direction="row" className={styles.nav}>
-            {/* <Button variant="contained" size={"large"} color="success" disableElevation onClick={onNavTo("/orders/create")}>Создать заказ</Button> */}
-            {/* <Button variant="contained" disableElevation onClick={onNavTo("/calendar")}>Календарь</Button>
-            <Button variant="contained" disableElevation onClick={onNavTo("/customers")}>База клиентов</Button> */}
+          <Stack spacing={2} direction="row" className={styles.title}>
+            <Typography className={styles.title} variant="h6" noWrap>
+              {title}
+            </Typography>
           </Stack>
         </Toolbar>
       </AppBar>
-      <Container maxWidth="xl">{children}</Container>
+      <Container maxWidth="xl" className={styles.container}>
+        {messageItems}
+        {children}
+      </Container>
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <BottomNavigation
+          showLabels
+          value={tabName}
+          onChange={handleChange}
+        >
+          
+          <BottomNavigationAction label="Питомцы" value="/pets" icon={<PetsIcon />} />
+          <BottomNavigationAction label="Клиенты" value="/customers" icon={<PeopleAltIcon />} />
+          <BottomNavigationAction label="Создать заказ" value="/orders/create" icon={<AddCircleOutlineIcon />} />
+          <BottomNavigationAction label="Заказы" value="/orders" icon={<AssignmentIcon />} />
+          <BottomNavigationAction label="Календарь" value="/calendar" icon={<TodayIcon />} />
+          
+        </BottomNavigation>
+      </Paper>
     </>
   );
 };

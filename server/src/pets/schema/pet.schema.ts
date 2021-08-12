@@ -1,7 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as mongoose from 'mongoose';
-import { Customer } from 'src/customers/schema/customer.schema';
-import { Order } from 'src/orders/schema/order.schema';
 
 export type PetDocument = Pet & mongoose.Document;
 
@@ -14,10 +12,13 @@ export class Pet {
   registrationDate: string;
 
   @Prop({ required: false })
-  image: string;
+  avatar: string;
 
   @Prop({ type: Number, required: false, default: 0 })
   rating: number;
+
+  @Prop({ required: true })
+  sex: string;
 
   @Prop({ required: false })
   breed: string;
@@ -33,6 +34,9 @@ export class Pet {
 
   @Prop({ required: false })
   comments: string;
+
+  @Prop({ type: [String], required: false })
+  images: string[];
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Customer' })
   customer: mongoose.Schema.Types.ObjectId;

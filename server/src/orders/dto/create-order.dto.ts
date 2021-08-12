@@ -15,12 +15,12 @@ import * as mongoose from 'mongoose';
 
 export class CreateOrderDto {
   @Allow()
-  @IsDateString()
-  dateTimeFrom: Date;
+  @IsString()
+  dateTimeFrom: string;
 
   @Allow()
-  @IsDateString()
-  dateTimeTo: Date;
+  @IsString()
+  dateTimeTo: string;
 
   @Allow()
   @IsNumber()
@@ -30,6 +30,11 @@ export class CreateOrderDto {
   @IsOptional()
   @IsNumber()
   deposit?: number = 0;
+
+  @Allow()
+  @IsOptional()
+  @IsNumber()
+  discount?: number = 0;
 
   @Allow()
   @IsOptional()

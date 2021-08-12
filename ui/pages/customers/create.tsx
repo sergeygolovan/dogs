@@ -17,7 +17,7 @@ const CreateCustomerPage: FC = () => {
 
   return (
     <MainLayout
-      title={`Создание карточки питомца`}
+      title={`Создание карточки клиента`}
       onNavBack={navBack}
     >
       <CustomerFormEditor mode="create" />

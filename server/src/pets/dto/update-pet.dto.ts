@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Allow, IsInt, IsMongoId, IsNumberString, IsOptional, IsString, IsUrl } from "class-validator";
+import { Allow, IsIn, IsInt, IsMongoId, IsNumberString, IsOptional, IsString, IsUrl } from "class-validator";
 import * as mongoose from "mongoose";
 
 export class UpdatePetDto {
@@ -15,7 +15,12 @@ export class UpdatePetDto {
 
     @Allow()
     @ApiProperty({ type: 'string', format: 'binary' })
-    image?: any;
+    avatar?: any;
+
+    @Allow()
+    @IsOptional()
+    @IsIn(["male", "female"])
+    sex?: string;
 
     @Allow()
     @IsOptional()

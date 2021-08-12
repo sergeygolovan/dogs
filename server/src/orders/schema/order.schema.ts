@@ -5,19 +5,22 @@ import { Pet } from 'src/pets/schema/pet.schema';
 
 export type OrderDocument = Order & mongoose.Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Order {
-  @Prop({ type: Date, required: true })
-  dateTimeFrom: Date;
+  @Prop({ type: String, required: true })
+  dateTimeFrom: string;
 
-  @Prop({ type: Date, required: true })
-  dateTimeTo: Date;
+  @Prop({ type: String, required: true })
+  dateTimeTo: string;
 
   @Prop({ type: Number, required: true })
   rate: number;
 
   @Prop({ type: Number, required: false, default: 0 })
   deposit: number;
+
+  @Prop({ type: Number, required: false, default: 0 })
+  discount: number;
 
   @Prop({ required: false })
   comments: string;

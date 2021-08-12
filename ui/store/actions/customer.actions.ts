@@ -4,6 +4,10 @@ import ICustomer, {
   CustomerCreateData,
   CustomerUpdateData,
 } from "../../types/customer";
+import { addMessage } from "../features/messages/messages.slice";
+
+const timeoutPromise = async (timeout: number) =>
+  new Promise((resolve) => setTimeout(resolve, timeout));
 
 /**
  * Запрос списка питомцев
@@ -14,14 +18,19 @@ export const fetchCustomerCollection = createAsyncThunk<
   { rejectValue: string }
 >(
   "customerCollection/fetchCustomerCollection",
-  async (_, { rejectWithValue }) => {
+  async (_, { rejectWithValue, dispatch }) => {
     try {
       const response = await axios.get<ICustomer[]>(
         `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers`
       );
       return response.data;
     } catch (e) {
-      return rejectWithValue(e.message);
+      let message = axios.isAxiosError(e)
+        ? e.response?.data.message
+        : e.message;
+
+      dispatch(addMessage({ type: "error", message }));
+      return rejectWithValue(message);
     }
   }
 );
@@ -33,16 +42,25 @@ export const fetchCustomer = createAsyncThunk<
   ICustomer,
   string,
   { rejectValue: string }
->("customerCollection/fetchCustomer", async (id, { rejectWithValue }) => {
-  try {
-    const response = await axios.get<ICustomer>(
-      `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers/${id}`
-    );
-    return response.data;
-  } catch (e) {
-    return rejectWithValue(e.message);
+>(
+  "customerCollection/fetchCustomer",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      const response = await axios.get<ICustomer>(
+        `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers/${id}`
+      );
+      //dispatch(addMessage({ type: "success", message: "Данные о клиенте успешно загружены" }));
+      return response.data;
+    } catch (e) {
+      let message = axios.isAxiosError(e)
+        ? e.response?.data.message
+        : e.message;
+
+      dispatch(addMessage({ type: "error", message }));
+      return rejectWithValue(message);
+    }
   }
-});
+);
 
 /**
  * Запрос на создание записи и питомце
@@ -53,8 +71,10 @@ export const createCustomer = createAsyncThunk<
   { rejectValue: string }
 >(
   "customerCollection/createCustomer",
-  async (customerData, { rejectWithValue }) => {
+  async (customerData, { rejectWithValue, dispatch }) => {
     try {
+      await timeoutPromise(800);
+
       const data = new FormData();
       Object.keys(customerData).forEach((field) =>
         data.append(field, (<any>customerData)[field])
@@ -65,9 +85,16 @@ export const createCustomer = createAsyncThunk<
         data
       );
 
+      dispatch(addMessage({ type: "success", message: "Новая запись успешно создана" }));
+
       return response.data;
     } catch (e) {
-      return rejectWithValue(e.message);
+      let message = axios.isAxiosError(e)
+        ? e.response?.data.message
+        : e.message;
+
+      dispatch(addMessage({ type: "error", message }));
+      return rejectWithValue(message);
     }
   }
 );
@@ -81,8 +108,10 @@ export const updateCustomer = createAsyncThunk<
   { rejectValue: string }
 >(
   "customerCollection/updateCustomer",
-  async (customerData, { rejectWithValue }) => {
+  async (customerData, { rejectWithValue, dispatch }) => {
     try {
+      await timeoutPromise(800);
+
       const data = new FormData();
       Object.keys(customerData).forEach((field) =>
         data.append(field, (<any>customerData)[field])
@@ -93,9 +122,16 @@ export const updateCustomer = createAsyncThunk<
         data
       );
 
+      dispatch(addMessage({ type: "success", message: "Данные о клиенте успешно обновлены" }));
+
       return { id: response.data._id, changes: customerData };
     } catch (e) {
-      return rejectWithValue(e.message);
+      let message = axios.isAxiosError(e)
+        ? e.response?.data.message
+        : e.message;
+
+      dispatch(addMessage({ type: "error", message }));
+      return rejectWithValue(message);
     }
   }
 );
@@ -107,14 +143,26 @@ export const deleteCustomer = createAsyncThunk<
   string,
   string,
   { rejectValue: string }
->("customerCollection/deleteCustomer", async (id, { rejectWithValue }) => {
-  try {
-    const response = await axios.delete<string>(
-      `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers/${id}`
-    );
+>(
+  "customerCollection/deleteCustomer",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      await timeoutPromise(800);
 
-    return response.data;
-  } catch (e) {
-    return rejectWithValue(e.message);
+      const response = await axios.delete<string>(
+        `${process.env.NEXT_PUBLIC_SERVICE_URL}/customers/${id}`
+      );
+      
+      dispatch(addMessage({ type: "success", message: "Данные о клиенте успешно удалены" }));
+
+      return response.data;
+    } catch (e) {
+      let message = axios.isAxiosError(e)
+        ? e.response?.data.message
+        : e.message;
+
+      dispatch(addMessage({ type: "error", message }));
+      return rejectWithValue(message);
+    }
   }
-});
+);

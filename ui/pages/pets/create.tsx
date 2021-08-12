@@ -7,11 +7,8 @@ import { AppDispatch, wrapper } from "../../store";
 import { fetchCustomerCollection } from "../../store/actions/customer.actions";
 
 const CreatePetPage: FC = () => {
-  const { push } = useRouter();
-  const navBack = () => push("/pets");
-
   return (
-    <MainLayout title={`Создание карточки питомца`} onNavBack={navBack}>
+    <MainLayout title={`Создание карточки питомца`}>
       <PetFormEditor mode="create" />
     </MainLayout>
   );

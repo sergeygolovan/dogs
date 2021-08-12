@@ -3,7 +3,7 @@ export default interface ICustomer {
     name: string;
     registrationDate: string;
     contacts: string;
-    image?: string;
+    avatar?: string;
     rating?: number;
     discount?: number;
     address?: string;

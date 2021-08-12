@@ -18,84 +18,88 @@ export class PetsService {
     private readonly fileService: FilesService,
   ) {}
 
-
   /**
    * Создание нового питомца в БД
-   * @param createPetDto 
-   * @param image 
+   * @param createPetDto
+   * @param avatar
    * @returns экземпляр класса Pet, созданный в БД
    */
   async create(
     createPetDto: CreatePetDto,
-    image?: Express.Multer.File,
+    avatar?: Express.Multer.File,
   ): Promise<Pet> {
-
-    // Если прикреплен файл с изображением, производим его сохранение 
-    if (image) {
-      createPetDto.image = this.fileService.createFile(FileType.IMAGE, image);
+    // Если прикреплен файл с изображением, производим его сохранение
+    if (avatar) {
+      createPetDto.avatar = this.fileService.createFile(FileType.IMAGE, avatar);
     }
 
     // Создаем новую запись о питомце в БД
-    const pet = await this.petModel.create({...createPetDto});
-    
+    const pet = await this.petModel.create({ ...createPetDto });
+
     // Обновляем список питомцев для указанного клиента
-    const customerDoc = (await this.customerService.getOne(createPetDto.customer)) as CustomerDocument;
+    const customerDoc = (await this.customerService.getOne(
+      createPetDto.customer,
+    )) as CustomerDocument;
     await customerDoc.updateOne({ $push: { pets: pet._id } });
 
     return pet;
   }
-
 
   /**
    * Получение списка всех питомцев с краткой информацией
    * @returns список всех питомцев
    */
   async getAll(): Promise<Pet[]> {
+    this.logger.log(`Запрос на получение списка питомцев...`);
 
-    this.logger.log(`Запрос на получение списка питомцев...`)
-
-    const pets = await this.petModel
-      .find(
-        null, 
-        ["-__v"]
-      );
+    const pets = await this.petModel.find(null, ['-__v']);
     return pets;
   }
 
-  
   /**
    * Получение полной информации о выбранном питомце
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   async getOne(id: ObjectId): Promise<Pet> {
-    const pet = await this.petModel
-      .findById(id, ["-__v"])
-      // .populate("customer", ["_id", "name", "image", "contacts", "rating"]);
+    const pet = await this.petModel.findById(id, ['-__v']);
+    // .populate("customer", ["_id", "name", "avatar", "contacts", "rating"]);
+
+    if (!pet) {
+      throw new BadRequestException(
+        `Данные о питомце с указанным идентификатором не обнаружены! (${id})`,
+      );
+    }
 
     return pet;
   }
 
-
   /**
    * Удаление записи о выбранном питомце
-   * @param id 
-   * @returns 
+   * @param id
+   * @returns
    */
   async delete(id: ObjectId): Promise<ObjectId> {
-
-    const pet = await this.petModel.findById(id, ["orders", "customer"]);
+    const pet = await this.petModel.findById(id, ['orders', 'customer']);
 
     if (!pet) {
-      throw new BadRequestException(`Невозможно удалить питомца с несуществующим идентификатором! (${id})`)
+      throw new BadRequestException(
+        `Невозможно удалить питомца с несуществующим идентификатором! (${id})`,
+      );
     }
 
     if (pet.orders.length) {
-      throw new BadRequestException(`Невозможно удалить питомца, для которого были сформированы заказы! (${pet.orders.join(', ')})`)
+      throw new BadRequestException(
+        `Невозможно удалить питомца, для которого были сформированы заказы! (${pet.orders.join(
+          ', ',
+        )})`,
+      );
     }
 
     // Обновляем список питомцев для указанного клиента
-    const customerDoc = (await this.customerService.getOne(pet.customer)) as CustomerDocument;
+    const customerDoc = (await this.customerService.getOne(
+      pet.customer,
+    )) as CustomerDocument;
     await customerDoc.updateOne({ $pull: { pets: { $eq: pet._id } } });
 
     await pet.deleteOne();
@@ -105,17 +109,16 @@ export class PetsService {
 
   /**
    * Обновление информации о питомце
-   * @param updatePetDto 
-   * @param image 
-   * @returns 
+   * @param updatePetDto
+   * @param avatar
+   * @returns
    */
   async update(
     updatePetDto: UpdatePetDto,
-    image?: Express.Multer.File,
+    avatar?: Express.Multer.File,
   ): Promise<Pet> {
-
-    if (image) {
-      updatePetDto.image = this.fileService.createFile(FileType.IMAGE, image);
+    if (avatar) {
+      updatePetDto.avatar = this.fileService.createFile(FileType.IMAGE, avatar);
     }
 
     const { _id, ...dto } = updatePetDto;

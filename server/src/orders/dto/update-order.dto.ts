@@ -3,12 +3,12 @@ import { Allow, IsDateString, IsIn, IsMongoId, IsNumberString, IsOptional, IsStr
 import * as mongoose from "mongoose";
 import { CreateOrderDto } from "./create-order.dto";
 
-export class UpdateOrderDto extends OmitType(CreateOrderDto, ["customer", "pets"] as const) {
+export class UpdateOrderDto extends OmitType(CreateOrderDto, ["customer", "pets", "rate", "dateTimeFrom", "dateTimeTo"] as const) {
     @Allow()
     @IsMongoId()
     _id: mongoose.Schema.Types.ObjectId;
 
     @Allow()
-    @IsIn([1, 2])
+    @IsIn([0, 1])
     status: number;
 }

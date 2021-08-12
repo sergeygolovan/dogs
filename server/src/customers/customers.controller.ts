@@ -28,7 +28,7 @@ export class CustomersController {
   constructor(private readonly customersService: CustomersService) {}
 
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   async create(
     @Body() createCustomerDto: CreateCustomerDto,
@@ -36,13 +36,13 @@ export class CustomersController {
   ) {
     this.logger.log({ dto: createCustomerDto });
 
-    let image: Express.Multer.File = files?.image?.[0];
+    let avatar: Express.Multer.File = files?.avatar?.[0];
 
-    return this.customersService.create(createCustomerDto, image);
+    return this.customersService.create(createCustomerDto, avatar);
   }
 
   @Put()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   async update(
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -50,8 +50,8 @@ export class CustomersController {
   ) {
     this.logger.log({ dto: updateCustomerDto });
 
-    let image: Express.Multer.File = files?.image?.[0];
-    return this.customersService.update(updateCustomerDto, image);
+    let avatar: Express.Multer.File = files?.avatar?.[0];
+    return this.customersService.update(updateCustomerDto, avatar);
   }
 
   @Get()

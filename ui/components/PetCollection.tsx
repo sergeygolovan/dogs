@@ -1,19 +1,15 @@
-import React, { ChangeEvent, FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import PetCard from "./PetCard";
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import styles from "../styles/PetCollection.module.css";
 import { useRouter } from "next/router";
-import {
-  petCollectionSelectors,
-  useAppDispatch,
-  useAppSelector,
-} from "../store";
-import { fetchPetCollection } from "../store/actions/pet.actions";
-import Loader from "./Loader";
+import { customerCollectionSelectors, useAppDispatch, useAppSelector } from "../store";
 import IPet from "../types/pet";
-import { Alert, Snackbar } from "@material-ui/core";
+import { Backdrop, CircularProgress } from "@material-ui/core";
+import FilterField from "./FilterField";
+import { IFilter, IFilterFieldValue } from "../types/filter";
+import { setFilterValues } from "../store/features/pets/petCollection.slice";
 
 interface IPetCollectionProps {
   pets: IPet[];
@@ -22,56 +18,71 @@ interface IPetCollectionProps {
 const PetCollection: FC<IPetCollectionProps> = ({ pets }) => {
   const router = useRouter();
 
-  const { loading, error, message } = useAppSelector((state) => state.pets);
-  const [query, setQuery] = useState("");
+  const { loading, filterValues } = useAppSelector((state) => state.pets);
+  const [selectedPets, setSelectedPets] = useState(pets);
+  const customers = useAppSelector(customerCollectionSelectors.selectAll);
 
-  const onSearch = (e: ChangeEvent<HTMLInputElement>) => {
-    setQuery(e.target.value);
+  const dispatch = useAppDispatch();
+
+  const filters: IFilter<IPet>[] = [
+    {
+      id: "name",
+      fieldSelector: (pet) => pet.name,
+      label: "Кличка",
+    },
+    {
+      id: "rating",
+      fieldSelector: (pet) => pet.rating,
+      label: "Рейтинг",
+    },
+    {
+      id: "orders.length",
+      fieldSelector: (pet) => pet.orders.length,
+      label: "Количество посещений",
+    },
+    {
+      id: "customer.name",
+      fieldSelector: (pet) => customers.find(c => c._id === pet.customer)?.name,
+      label: "Владелец",
+    },
+  ];
+
+  const onFilter = (items: IPet[], filterValues: IFilterFieldValue) => {
+    setSelectedPets(items);
+    dispatch(setFilterValues(filterValues))
   };
 
-  const [isToastOpen, setIsToastOpen] = useState(error);
-  const onToastClose = () => setIsToastOpen(false);
-
-  const itemsToDraw = pets
-    .filter((item) => item.name?.toLowerCase().includes(query.toLowerCase()))
-    .map((item) => <PetCard key={item._id} {...item} />);
+  const itemsToDraw = selectedPets.map((item) => (
+    <PetCard key={item._id} pet={item} />
+  ));
 
   return (
     <div className={styles.container}>
-      {loading ? (
-        <Loader loading={loading} />
-      ) : (
-        <>
-          <div className={styles.search}>
-            <TextField onChange={onSearch} label="Поиск" type="search" />
-            <Button
-              className={styles.button}
-              startIcon={<AddCircleOutlineIcon style={{ fontSize: 30 }} />}
-              size="large"
-              onClick={() => router.push("/pets/create")}
-            >
-              Добавить карточку питомца
-            </Button>
-          </div>
-          <div className={styles.items}>{itemsToDraw}</div>
-          <Snackbar
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            open={isToastOpen}
-            autoHideDuration={3000}
-            onClose={onToastClose}
-          >
-            <Alert
-              severity={error ? "error" : "success"}
-              onClose={onToastClose}
-            >
-              {message}
-            </Alert>
-          </Snackbar>
-        </>
-      )}
+      <div className={styles.search}>
+        <FilterField 
+          filters={filters} 
+          items={pets}
+          onChange={onFilter} 
+          selectedFilterId={filterValues.selectedFilterId}
+          query={filterValues.query}
+          order={filterValues.order}
+        />
+        <Button
+          className={styles.button}
+          startIcon={<AddCircleOutlineIcon style={{ fontSize: 30 }} />}
+          size="large"
+          onClick={() => router.push("/pets/create")}
+        >
+          Добавить карточку питомца
+        </Button>
+      </div>
+      <div className={styles.items}>{itemsToDraw}</div>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

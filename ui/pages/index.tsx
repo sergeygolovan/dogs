@@ -1,13 +1,11 @@
+import { useRouter } from "next/router";
 import React from "react";
-import MainLayout from "../layouts/MainLayout";
-import MainMenu from "../components/MainMenu";
 
 const Index = () => {
-  return (
-    <MainLayout showBackButton={false} >
-      <MainMenu/>
-    </MainLayout>
-  );
+
+  useRouter().push('/calendar');
+
+  return null;
 };
 
 export default Index;

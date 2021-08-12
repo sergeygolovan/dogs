@@ -32,28 +32,31 @@ export class PetsController {
   constructor(private readonly petsService: PetsService) {}
 
   @Post()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @UseInterceptors(FileFieldsInterceptor([
+    { name: 'avatar', maxCount: 1 },
+    //{ name: 'images', maxCount: 10 }
+  ]))
   @ApiConsumes('multipart/form-data')
   async create(@Body() createPetDto: CreatePetDto, @UploadedFiles() files?) {
 
     this.logger.log('Создание записи о питомце...')
     this.logger.log({ dto: createPetDto });
 
-    let image: Express.Multer.File = files?.image?.[0];
+    let avatar: Express.Multer.File = files?.avatar?.[0];
 
-    return this.petsService.create(createPetDto, image);
+    return this.petsService.create(createPetDto, avatar);
   }
 
   @Put()
-  @UseInterceptors(FileFieldsInterceptor([{ name: 'image', maxCount: 1 }]))
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'avatar', maxCount: 1 }]))
   @ApiConsumes('multipart/form-data')
   async update(@Body() updatePetDto: UpdatePetDto, @UploadedFiles() files?) {
 
     this.logger.log('Обновление записи о питомце...')
     this.logger.log({ dto: updatePetDto });
 
-    let image: Express.Multer.File = files?.image?.[0];
-    return this.petsService.update(updatePetDto, image);
+    let avatar: Express.Multer.File = files?.avatar?.[0];
+    return this.petsService.update(updatePetDto, avatar);
   }
 
 

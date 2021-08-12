@@ -1,16 +1,27 @@
+import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { FC } from "react";
+import OrderFormEditor from "../../components/OrderFormEditor";
 import MainLayout from "../../layouts/MainLayout";
+import { AppDispatch, wrapper } from "../../store";
+import { fetchCustomerCollection } from "../../store/actions/customer.actions";
+import { fetchPetCollection } from "../../store/actions/pet.actions";
 
-function createOrderPage() {
-  const router = useRouter();
+const CreateOrderPage: FC = () => {
+  const { push } = useRouter();
+  const navBack = () => push("/orders");
 
   return (
-    <MainLayout
-      title={`Создание заказа`}
-      onNavBack={() => router.push("/")}
-    ></MainLayout>
+    <MainLayout title={`Создание заказа`} onNavBack={navBack}>
+      <OrderFormEditor mode="create" />
+    </MainLayout>
   );
-}
+};
 
-export default createOrderPage;
+export default CreateOrderPage;
+
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(async ({ store }) => {
+    await (store.dispatch as AppDispatch)(fetchCustomerCollection());
+    await (store.dispatch as AppDispatch)(fetchPetCollection());
+  });

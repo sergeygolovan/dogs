@@ -26,14 +26,14 @@ interface ICustomerSelectorProps {
 }
 
 const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, helperText, onChange, onBlur, disabled = false, error = false }) => {
-  const entities = useAppSelector(customerCollectionSelectors.selectAll);
+  const customers = useAppSelector(customerCollectionSelectors.selectAll);
 
   const [selectedId, setSelectedId] = useState(value || "");
 
-  const selectedEntity = entities.find(c => c._id === selectedId);
+  const selectedCustomer = customers.find(c => c._id === selectedId);
 
-  const imagePath = selectedEntity && selectedEntity.image
-    ? `${process.env.NEXT_PUBLIC_SERVICE_URL}/${selectedEntity.image}`
+  const imagePath = selectedCustomer && selectedCustomer.avatar
+    ? `${process.env.NEXT_PUBLIC_SERVICE_URL}/${selectedCustomer.avatar}`
     : "#";
 
   const items = [
@@ -41,7 +41,7 @@ const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, help
       <em>Не указан</em>
     </MenuItem>,
   ].concat(
-    entities.map((customer) => (
+    customers.map((customer) => (
       <MenuItem key={customer._id} value={customer._id}>
         <b>{customer.name}</b><em> ({customer.contacts})</em>
       </MenuItem>

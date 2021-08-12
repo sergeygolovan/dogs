@@ -13,7 +13,7 @@ export class UpdateCustomerDto {
 
     @Allow()
     @ApiProperty({ type: 'string', format: 'binary' })
-    image?: any;
+    avatar?: any;
 
     @Allow()
     @IsNumberString()

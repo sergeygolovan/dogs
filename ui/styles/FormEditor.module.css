@@ -1,52 +1,8 @@
 .container {
-  padding: 85px 0 0 0;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 300px;
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
   font-family: "Roboto";
-}
-
-.progress {
-  grid-area: 4 / 1 / 5 / 6;
-  width: 100%;
-}
-
-.avatar {
-  grid-area: 1 / 1 / 2 / 2;
-  padding: 0 50px;
-  margin: 20px 0;
-}
-
-.avatar__image {
-  margin: auto;
-  cursor: pointer;
-  text-align: center;
-}
-
-.hidden {
-  display: none;
-}
-
-.avatar__rating {
-  text-align: center;
-  margin: 10px 0;
-}
-
-.divider {
-  margin: 50px 0 10px 0;
-  text-transform: uppercase;
-}
-
-.general {
-  padding: 25px 0;
-  grid-area: 1 / 2 / 2 / 5;
-}
-
-.detail {
-  padding: 25px 0 0 0;
-  grid-area: 2 / 1 / 4 / 5;
 }
 
 .toolbar {
@@ -60,48 +16,8 @@
   margin-left: 10px;
 }
 
-.input {
-
-  margin: 10px 0 15px 0;
-}
-
-.text {
-  padding: 20px;
-  border: 1px solid #d0d0d0;
-  border-radius: 7px;
-
-}
-
-.input.input__main input {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.error {
-  font-family: "Roboto";
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-  margin: 100px 0;
-  width: 100%;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 800px) {
   .container {
-    padding: 70px 0 0 0;
     display: block;
-    grid-row-gap: 20px;
-  }
-
-  .avatar {
-    padding: 0;
-  }
-
-  .items {
-    grid-area: none;
-    grid-template-columns: none;
-    grid-auto-rows: auto !important;
-    grid-gap: 50px;
-    justify-content: center;
   }
 }
