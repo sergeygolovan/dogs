@@ -18,7 +18,7 @@ const CustomerListItem: FC<CustomerListItemProps> = ({ customer }) => {
   const creditAmount = calcCreditAmount(orders);
 
   return (
-    <Link href={`customers/${customer._id}`}>
+    <Link href={`/customers/${customer._id}`} passHref>
       <div className={styles.container}>
         <div className={styles.avatar}>
           <Avatar

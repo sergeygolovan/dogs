@@ -1,18 +1,26 @@
-import { AnyAction, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { AnyAction, createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createOrder, deleteOrder, fetchOrderCollection, updateOrder } from "../../actions/order.actions";
 import IOrder from "../../../types/order";
 import { HYDRATE } from "next-redux-wrapper";
+import { IFilterFieldValue } from "../../../types/filter";
 
 interface IOrderCollectionInitialState {
   selected?: IOrder;
   loading: boolean;
   error: boolean;
   message?: string;
+  filterValues: IFilterFieldValue;
 }
 
 const orderCollectionInitialState: IOrderCollectionInitialState = {
   loading: false,
   error: false,
+  message: '',
+  filterValues: {
+    query: "",
+    selectedFilterId: "dateTimeFrom",
+    order: "asc",
+  }
 };
 
 export const orderCollectionAdapter = createEntityAdapter<IOrder>({
@@ -24,9 +32,23 @@ export const orderCollectionSlice = createSlice({
   initialState: orderCollectionAdapter.getInitialState(
     orderCollectionInitialState
   ),
-  reducers: {},
+  reducers: {
+    setFilterValues(state, action: PayloadAction<IFilterFieldValue>) {
+      state.filterValues = action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
+
+    builder.addCase(HYDRATE, (state, { payload }) => ({
+      ...state,
+      ...payload.orders,
+      loading: state.loading,
+      error:  state.error,
+      message: state.message,
+      filterValues: state.filterValues,
+    }));
+
     /**
      * Обработка события получения списка всех питомцев
      */
@@ -37,6 +59,7 @@ export const orderCollectionSlice = createSlice({
     builder.addCase(fetchOrderCollection.fulfilled, (state, action) => {
       state.loading = false;
       orderCollectionAdapter.setAll(state, action.payload);
+      state.message = "Данные о заказах успешно загружены";
     });
 
     builder.addCase(fetchOrderCollection.rejected, (state, action) => {
@@ -101,4 +124,5 @@ export const orderCollectionSlice = createSlice({
   },
 });
 
+export const { setFilterValues } = orderCollectionSlice.actions;
 export default orderCollectionSlice.reducer;

@@ -1,14 +1,15 @@
 import { Avatar } from "@material-ui/core";
-import React, { ChangeEvent, useState } from "react";
-import { SimpleFileUploadProps } from "formik-material-ui";
+import React, { ChangeEvent, FC, useState } from "react";
 import styles from "../styles/AvatarUploader.module.css";
 
-function AvatarUploader(props: {
+interface IAvatarUploaderProps {
   name: string;
   value: string;
   size: string;
   onChange: (e: React.ChangeEvent<any>, file: File) => void;
-}) {
+};
+
+const AvatarUploader: FC<IAvatarUploaderProps> = (props) => {
   const [imagePath, setImagePath] = useState(props.value);
 
   let src;

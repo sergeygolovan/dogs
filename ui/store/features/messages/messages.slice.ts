@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { HYDRATE } from "next-redux-wrapper";
 import { v4 as uuidv4 } from 'uuid';
 import IMessage, { MessageBody } from "../../../types/message";
 
@@ -7,8 +8,6 @@ const initialState: {
 } = {
   queue: []
 };
-
-let position = 0;
 
 export const messagesSlice = createSlice({
   name: "messages",
@@ -33,6 +32,12 @@ export const messagesSlice = createSlice({
       }
     }
   },
+  extraReducers: (builder) => {
+    builder.addCase(HYDRATE, (state, { payload }) => ({
+      ...payload.messages,
+      queue: state.queue
+    }));
+  }
 });
 
 export const { addMessage, removeMessage } = messagesSlice.actions;

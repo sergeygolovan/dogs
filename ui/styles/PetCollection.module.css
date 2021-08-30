@@ -3,23 +3,22 @@
   display: grid;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  justify-content:center;
+  justify-content: center;
 }
 
 .search {
-    grid-area: 1 / 2 / 1 / 6;
-    display: grid;
-    align-items: center;
-
+  grid-area: 1 / 2 / 1 / 6;
+  display: grid;
+  align-items: center;
 }
 
 .search > div {
-    width: 100%;
+  width: 100%;
 }
 
 .button {
-  padding: 40px 0;
   margin-top: 20px;
+  padding: 40px 0;
   border: 1px solid #d0d0d0;
   font-weight: bold;
   font-size: 16px;
@@ -37,7 +36,7 @@
 
 @media (max-width: 800px) {
   .container {
-    padding: 70px 0 0 0;
+    padding: 0;
     display: block;
     grid-row-gap: 20px;
   }

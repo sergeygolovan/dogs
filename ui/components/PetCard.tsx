@@ -5,9 +5,9 @@ import Typography from "@material-ui/core/Typography";
 import Rating from "@material-ui/core/Rating";
 import { CardActionArea } from "@material-ui/core";
 import { FC } from "react";
-import styles from "../styles/PetCard.module.css";
 import { useRouter } from "next/router";
 import IPet from "../types/pet";
+import styles from "../styles/PetCard.module.css";
 
 interface PetCardProps {
   pet: IPet;

@@ -19,7 +19,7 @@ interface PetFormEditorProps {
 }
 
 const PetFormEditor: FC<PetFormEditorProps> = ({ pet, mode }) => {
-  const { loading, error, message } = useAppSelector((state) => state.pets);
+  const { loading } = useAppSelector((state) => state.pets);
   const { push } = useRouter();
   const dispatch = useAppDispatch();
 
@@ -78,8 +78,6 @@ const PetFormEditor: FC<PetFormEditorProps> = ({ pet, mode }) => {
 
       hasError = action.meta.requestStatus === "rejected";
     }
-
-    // enqueueSnackbar(message, {variant: hasError && 'error' || 'success'});
   };
 
   // Инициализация обработчика удаления
@@ -92,8 +90,6 @@ const PetFormEditor: FC<PetFormEditorProps> = ({ pet, mode }) => {
       if (action.meta.requestStatus === "fulfilled") {
         push("/pets");
       }
-
-      // enqueueSnackbar(message, {variant: hasError && 'error' || 'success'});
     }
   };
 
@@ -105,8 +101,6 @@ const PetFormEditor: FC<PetFormEditorProps> = ({ pet, mode }) => {
       onSave={onSavePet}
       onDelete={onDeletePet}
       loading={loading}
-      error={error}
-      message={message}
     >
       {(formik) => (
         <div className={styles.container}>

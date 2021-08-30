@@ -1,11 +1,6 @@
-import React, { FC, useState } from "react";
-import ICustomer from "../types/customer";
-import Select, { SelectChangeEvent } from "@material-ui/core/Select";
+import React, { FC } from "react";
 import {
   Avatar,
-  FormControl,
-  FormHelperText,
-  InputLabel,
   MenuItem,
   Stack,
   TextField,
@@ -25,16 +20,26 @@ interface ICustomerSelectorProps {
   error?: boolean;
 }
 
-const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, helperText, onChange, onBlur, disabled = false, error = false }) => {
+const CustomerSelector: FC<ICustomerSelectorProps> = (props) => {
+  const {
+    value,
+    name,
+    label,
+    helperText,
+    onChange,
+    onBlur,
+    disabled = false,
+    error = false,
+  } = props;
+
   const customers = useAppSelector(customerCollectionSelectors.selectAll);
 
-  const [selectedId, setSelectedId] = useState(value || "");
+  const selectedCustomer = customers.find((c) => c._id === value);
 
-  const selectedCustomer = customers.find(c => c._id === selectedId);
-
-  const imagePath = selectedCustomer && selectedCustomer.avatar
-    ? `${process.env.NEXT_PUBLIC_SERVICE_URL}/${selectedCustomer.avatar}`
-    : "#";
+  const imagePath =
+    selectedCustomer && selectedCustomer.avatar
+      ? `${process.env.NEXT_PUBLIC_SERVICE_URL}/${selectedCustomer.avatar}`
+      : "#";
 
   const items = [
     <MenuItem value="" key="none">
@@ -43,26 +48,22 @@ const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, help
   ].concat(
     customers.map((customer) => (
       <MenuItem key={customer._id} value={customer._id}>
-        <b>{customer.name}</b><em> ({customer.contacts})</em>
+        <b>{customer.name}</b>
+        <em> ({customer.contacts})</em>
       </MenuItem>
     ))
   );
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedId(event.target.value);
-    onChange(event);
-  };
-
   return (
     <div className={styles.container}>
       <Stack direction="row" spacing={2}>
-        <Link href={selectedId ? `/customers/${selectedId}` : ''}>
-        <Avatar
-          className={styles.avatar}
-          variant="rounded"
-          src={imagePath}
-          sx={{ width: "56px", height: "56px" }}
-        />
+        <Link href={value ? `/customers/${value}` : ""} passHref>
+          <Avatar
+            className={styles.avatar}
+            variant="rounded"
+            src={imagePath}
+            sx={{ width: "56px", height: "56px" }}
+          />
         </Link>
         <TextField
           className={styles.selector}
@@ -70,8 +71,8 @@ const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, help
           error={error}
           label={label}
           name={name}
-          value={selectedId}
-          onChange={handleChange}
+          value={value}
+          onChange={onChange}
           onBlur={onBlur || (() => {})}
           helperText={!disabled && helperText}
           disabled={disabled}
@@ -81,6 +82,6 @@ const CustomerSelector: FC<ICustomerSelectorProps> = ({ value, name, label, help
       </Stack>
     </div>
   );
-}
+};
 
 export default CustomerSelector;

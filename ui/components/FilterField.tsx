@@ -14,15 +14,18 @@ interface IFilterFieldProps<T> {
   filters: IFilter<T>[];
   items: T[];
   onChange: (items: T[], values: IFilterFieldValue) => void;
-  selectedFilterId: string;
-  query: string;
-  order: string;
+  filterFieldValue: IFilterFieldValue;
 }
 
-const FilterField = <T,>(props: IFilterFieldProps<T>) => {
-  const [query, setQuery] = useState(props.query);
-  const [filterId, setFilterId] = useState(props.selectedFilterId);
-  const [order, setOrder] = useState(props.order);
+const FilterField = <T,>({
+  filters,
+  items,
+  filterFieldValue,
+  onChange,
+}: IFilterFieldProps<T>) => {
+  const [query, setQuery] = useState(filterFieldValue.query);
+  const [filterId, setFilterId] = useState(filterFieldValue.selectedFilterId);
+  const [order, setOrder] = useState(filterFieldValue.order);
 
   const onSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -42,40 +45,37 @@ const FilterField = <T,>(props: IFilterFieldProps<T>) => {
   };
 
   useEffect(() => {
-
-    let selectedFilter = props.filters.find(f => f.id === filterId);
+    let selectedFilter = filters.find((f) => f.id === filterId);
 
     const sorter = (x: T, y: T) => {
       const x1 = selectedFilter?.fieldSelector(x),
         y1 = selectedFilter?.fieldSelector(y);
-
-      console.log(x1, y1);
 
       let sortOrder = order === "desc" ? -1 : 1;
 
       return x1 > y1 ? sortOrder : x1 < y1 ? -sortOrder : 0;
     };
 
-    const items = props.items
+    const selectedItems = items
       .filter((e) => {
         let value = selectedFilter?.fieldSelector(e);
 
         if (value !== undefined && value !== null) {
-            return value.toString().includes(query)
+          return value.toString().toLowerCase().includes(query.toLowerCase());
         }
 
         return false;
       })
       .sort(sorter);
 
-    props.onChange(items, {
+    onChange(selectedItems, {
       selectedFilterId: filterId,
       query,
       order,
     });
-  }, [filterId, query, order]);
+  }, [filterId, query, order, filters, items, onChange]);
 
-  const filterItems = props.filters.map((filter) => (
+  const filterItems = filters.map((filter) => (
     <MenuItem key={filter.id} value={filter.id}>
       <b>{filter.label}</b>
     </MenuItem>
@@ -101,7 +101,14 @@ const FilterField = <T,>(props: IFilterFieldProps<T>) => {
       >
         {filterItems}
       </TextField>
-      <ToggleButtonGroup size="large" fullWidth className={styles.sorter} value={order} exclusive onChange={onSort}>
+      <ToggleButtonGroup
+        size="large"
+        fullWidth
+        className={styles.sorter}
+        value={order}
+        exclusive
+        onChange={onSort}
+      >
         <ToggleButton value="asc">
           <ArrowUpwardIcon />
         </ToggleButton>

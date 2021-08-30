@@ -1,8 +1,7 @@
-import React, { FC, useState } from "react";
+import React, { FC, useCallback, useMemo, useState } from "react";
 import PetCard from "./PetCard";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import styles from "../styles/PetCollection.module.css";
 import { useRouter } from "next/router";
 import { customerCollectionSelectors, useAppDispatch, useAppSelector } from "../store";
 import IPet from "../types/pet";
@@ -10,6 +9,7 @@ import { Backdrop, CircularProgress } from "@material-ui/core";
 import FilterField from "./FilterField";
 import { IFilter, IFilterFieldValue } from "../types/filter";
 import { setFilterValues } from "../store/features/pets/petCollection.slice";
+import styles from "../styles/PetCollection.module.css";
 
 interface IPetCollectionProps {
   pets: IPet[];
@@ -24,7 +24,7 @@ const PetCollection: FC<IPetCollectionProps> = ({ pets }) => {
 
   const dispatch = useAppDispatch();
 
-  const filters: IFilter<IPet>[] = [
+  const filters: IFilter<IPet>[] = useMemo(() =>[
     {
       id: "name",
       fieldSelector: (pet) => pet.name,
@@ -45,12 +45,12 @@ const PetCollection: FC<IPetCollectionProps> = ({ pets }) => {
       fieldSelector: (pet) => customers.find(c => c._id === pet.customer)?.name,
       label: "Владелец",
     },
-  ];
+  ], [customers]);
 
-  const onFilter = (items: IPet[], filterValues: IFilterFieldValue) => {
+  const onFilter = useCallback((items: IPet[], filterValues: IFilterFieldValue) => {
     setSelectedPets(items);
     dispatch(setFilterValues(filterValues))
-  };
+  }, [dispatch, setSelectedPets, setFilterValues]);
 
   const itemsToDraw = selectedPets.map((item) => (
     <PetCard key={item._id} pet={item} />
@@ -63,9 +63,7 @@ const PetCollection: FC<IPetCollectionProps> = ({ pets }) => {
           filters={filters} 
           items={pets}
           onChange={onFilter} 
-          selectedFilterId={filterValues.selectedFilterId}
-          query={filterValues.query}
-          order={filterValues.order}
+          filterFieldValue={filterValues}
         />
         <Button
           className={styles.button}

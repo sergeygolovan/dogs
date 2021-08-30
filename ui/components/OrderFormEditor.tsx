@@ -31,14 +31,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import * as Yup from "yup";
-import PetCard from "./PetCard";
 import styles from "../styles/OrderFormEditor.module.css";
 import CustomerSelector from "./CustomerSelector";
 import PetSelector from "./PetSelector";
-import { customerCollectionAdapter } from "../store/features/customers/customerCollection.slice";
-import { ChangeHandler } from "react-hook-form";
-import { ChangeEvent } from "react";
-import { PanToolSharp } from "@material-ui/icons";
 import { calcDays, calcPrice } from "../utils/calc";
 
 interface OrderFormEditorProps {
@@ -47,7 +42,7 @@ interface OrderFormEditorProps {
 }
 
 const OrderFormEditor: FC<OrderFormEditorProps> = ({ order, mode }) => {
-  const { loading, error, message } = useAppSelector((state) => state.orders);
+  const { loading } = useAppSelector((state) => state.orders);
   const allCustomers = useAppSelector(customerCollectionSelectors.selectAll);
   const allPets = useAppSelector(petCollectionSelectors.selectAll);
 
@@ -69,6 +64,8 @@ const OrderFormEditor: FC<OrderFormEditorProps> = ({ order, mode }) => {
       pets: [],
       deposit: 0,
       comments: "",
+      createdAt: new Date(),
+      updatedAt: new Date()
     };
   } else {
     // Устанавливаем начальные значения из выбранной сущности
@@ -151,8 +148,6 @@ const OrderFormEditor: FC<OrderFormEditorProps> = ({ order, mode }) => {
       onSave={onSaveOrder}
       onDelete={onDeleteOrder}
       loading={loading}
-      error={error}
-      message={message}
       showToolbar={activeStep === steps.length - 1 || mode === "edit"}
     >
       {(formik) => (

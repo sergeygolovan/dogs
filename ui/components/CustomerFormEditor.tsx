@@ -31,6 +31,7 @@ import * as Yup from "yup";
 import PetCard from "./PetCard";
 import styles from "../styles/CustomerFormEditor.module.css";
 import { calcCreditAmount } from "../utils/calc";
+import { setFilterValues } from "../store/features/orders/orderCollection.slice";
 
 interface CustomerFormEditorProps {
   customer?: ICustomer | null;
@@ -112,6 +113,20 @@ const CustomerFormEditor: FC<CustomerFormEditorProps> = ({
 
   const petsToDraw = pets.map((pet) => <PetCard key={pet._id} pet={pet} />);
 
+  const creditAmount = calcCreditAmount(orders);
+
+  const onNavToOrders = () => {
+    dispatch(setFilterValues({
+      query: customer?.name || "",
+      selectedFilterId: "customer.name",
+      order: "asc"
+    }))
+
+    push("/orders", undefined, {
+      shallow: false
+    })
+  }
+
   return (
     <FormEditor
       mode={mode}
@@ -120,8 +135,6 @@ const CustomerFormEditor: FC<CustomerFormEditorProps> = ({
       onSave={onSaveCustomer}
       onDelete={onDeleteCustomer}
       loading={loading}
-      error={error}
-      message={message}
     >
       {(formik) => (
         <div className={styles.container}>
@@ -209,13 +222,13 @@ const CustomerFormEditor: FC<CustomerFormEditorProps> = ({
                   Дата регистрации: <b>{formik.values.registrationDate}</b>
                 </Typography>
 
-                <Typography className={styles.text}>
-                  Количество посещений: <b>{customer!.orders.length}</b>
+                <Typography className={`${styles.text} ${styles.clickable}`} onClick={onNavToOrders}>
+                  Количество заказов: <b>{customer!.orders.length}</b>
                 </Typography>
 
-                <Typography className={styles.text}>
-                  Задолженность: <b>{calcCreditAmount(orders)}₽</b>
-                </Typography>
+                {creditAmount > 0 && <Typography className={`${styles.text} ${styles.text__warning}`}>
+                  Задолженность: <b>{creditAmount}₽</b>
+                </Typography>}
               </Stack>
             )}
           </div>

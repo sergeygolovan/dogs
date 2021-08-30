@@ -9,8 +9,6 @@ interface EditorProps<Entity> {
   validationSchema: any;
   loading: boolean;
   showToolbar?: boolean;
-  error: boolean;
-  message: string;
   onSave: (values: Entity) => Promise<void>;
   onDelete?: () => Promise<void>;
   children: (
@@ -26,8 +24,6 @@ export const FormEditor = <Entity,>(props: EditorProps<Entity>) => {
     onSave,
     onDelete,
     loading,
-    error,
-    message,
     children,
     showToolbar = true,
   } = props;

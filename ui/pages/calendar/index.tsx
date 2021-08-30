@@ -2,71 +2,45 @@ import dynamic from "next/dynamic";
 import { SchedulerViews } from "smart-webcomponents-react";
 import MainLayout from "../../layouts/MainLayout";
 import "smart-webcomponents-react/source/styles/smart.default.css";
-import styles from "../../styles/Calendar.module.css";
+import IOrder from "../../types/order";
+import { GetServerSideProps } from "next";
+import { wrapper, AppDispatch } from "../../store";
+import { fetchCustomerCollection } from "../../store/actions/customer.actions";
+import { fetchOrderCollection } from "../../store/actions/order.actions";
+import { fetchPetCollection } from "../../store/actions/pet.actions";
+// import OrderCalendar from "../../components/OrderCalendar";
+import { useRouter } from "next/router";
 
-const Scheduler = dynamic(() => import("smart-webcomponents-react/scheduler"), {
-  ssr: false, //no server-side rendering
-  loading: () => <>Загрузка...</>,
-});
-
-function CalendarPage() {
-  const today = new Date(),
-    todayDate = today.getDate(),
-    currentYear = today.getFullYear(),
-    currentMonth = today.getMonth(),
-    dataSource = [
-      {
-        label: "Google AdWords Strategy",
-        dateStart: new Date(currentYear, currentMonth, todayDate, 9, 0),
-        dateEnd: new Date(currentYear, currentMonth, todayDate + 1, 10, 30),
-        description: "hello description"
-        
-      },
-      {
-        label: "New Brochures",
-        dateStart: new Date(currentYear, currentMonth, todayDate - 1, 11, 30),
-        dateEnd: new Date(currentYear, currentMonth, todayDate - 1, 14, 15),
-
-      },
-      {
-        label: "Brochure Design Review",
-        dateStart: new Date(currentYear, currentMonth, todayDate + 2, 13, 15),
-        dateEnd: new Date(currentYear, currentMonth, todayDate + 2, 16, 15),
-       
-      },
-    ],
-    currentTimeIndicator = true,
-    shadeUntilCurrentTime = true,
-    view = "day",
-    views: SchedulerViews[] = [
-      "day",
-      "week",
-      "month",
-      "timelineDay",
-      "timelineWeek",
-      "timelineMonth",
-    ],
-    firstDayOfWeek = 1;
+function CalendarPage({ orders }) {
+  const router = useRouter();
 
   return (
-    <MainLayout title={`Календарь`} showBackButton={true}>
-      <div className={styles.container}>
-        <main className={styles.main}>
-          <Scheduler
-            className={styles.scheduler}
-            id="scheduler"
-            currentTimeIndicator={true}
-            shadeUntilCurrentTime={false}
-            dataSource={dataSource}
-            view="month"
-            //maxEventsPerCell={5}
-            // views={views}
-            firstDayOfWeek={1}
-          ></Scheduler>
-        </main>
-      </div>
+    <MainLayout
+      title={`Календарь`}
+      onNavBack={() => router.push("/")}
+    >
+      {/* <OrderCalendar orders={orders}/> */}
     </MainLayout>
   );
 }
 
 export default CalendarPage;
+
+export const getServerSideProps: GetServerSideProps =
+  wrapper.getServerSideProps(async ({ store }) => {
+    await (store.dispatch as AppDispatch)(fetchCustomerCollection());
+    await (store.dispatch as AppDispatch)(fetchPetCollection());
+
+    const action = await (store.dispatch as AppDispatch)(
+      fetchOrderCollection()
+    );
+
+    return {
+      props: {
+        orders:
+          action.meta.requestStatus !== "rejected"
+            ? (action.payload as IOrder[])
+            : [],
+      },
+    };
+  });

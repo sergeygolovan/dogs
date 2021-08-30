@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
-import React from "react";
 
 const Index = () => {
 
-  useRouter().push('/calendar');
+  const { push } = useRouter();
+
+  //push('/calendar');
 
   return null;
 };

@@ -3,9 +3,6 @@
   grid-template-columns: 70% calc(20% - 40px) 10%;
 }
 
-.search {
-}
-
 .selector {
   margin-left: 20px;
   margin-right: 20px;
@@ -17,7 +14,7 @@
 
 @media (max-width: 800px) {
   .container {
-    padding: 70px 0 0 0;
+    padding: 0;
     display: block;
   }
 

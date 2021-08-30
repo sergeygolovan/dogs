@@ -1,9 +1,11 @@
 import IOrder from "../types/order";
 
 export function calcCreditAmount(orders: IOrder[]): number {
-  return orders.reduce((res, order) => {
-      return res + calcPrice(order, true)
-  }, 0);
+  return orders
+    .filter((o) => o.dateTimeTo < new Date().toISOString().slice(0, 16))
+    .reduce((res, order) => {
+      return res + calcPrice(order, true);
+    }, 0);
 }
 
 export function calcDays(values): number {

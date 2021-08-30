@@ -72,7 +72,7 @@ const PetSelector: FC<IPetSelectorProps> = ({
 
   return (
     <div className={styles.container}>
-      {
+      {!disabled && (
         <Autocomplete
           className={styles.input}
           multiple
@@ -107,8 +107,12 @@ const PetSelector: FC<IPetSelectorProps> = ({
             />
           )}
         />
-      }
-      <Stack className={styles.cards} direction="row" justifyContent="flex-start">
+      )}
+      <Stack
+        className={styles.cards}
+        direction="row"
+        justifyContent="flex-start"
+      >
         {selectedItems}
       </Stack>
     </div>

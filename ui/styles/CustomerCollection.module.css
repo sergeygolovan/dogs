@@ -1,17 +1,14 @@
 .container {
   padding: 85px 0 0 0;
   display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: 200px auto;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
+  justify-content: center;
 }
 
 .search {
   grid-area: 1 / 2 / 1 / 6;
   display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: 60px auto;
   align-items: center;
 }
 
@@ -20,6 +17,7 @@
 }
 
 .button {
+  margin-top: 20px;
   padding: 40px 0;
   border: 1px solid #d0d0d0;
   font-weight: bold;
@@ -33,12 +31,16 @@
 
 @media (max-width: 800px) {
   .container {
-    padding: 70px 0 0 0;
+    padding: 0;
     display: block;
     grid-row-gap: 20px;
   }
 
   .items {
+    grid-area: none;
+    grid-template-columns: none;
+    grid-auto-rows: auto;
+    grid-gap: 50px;
     justify-content: center;
   }
 }

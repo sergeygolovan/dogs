@@ -15,7 +15,6 @@ import { IFilterFieldValue } from "../../../types/filter";
 import { HYDRATE } from "next-redux-wrapper";
 
 interface IPetCollectionInitialState {
-  selected?: IPet;
   loading: boolean;
   error: boolean;
   message?: string;
@@ -25,6 +24,7 @@ interface IPetCollectionInitialState {
 const petCollectionInitialState: IPetCollectionInitialState = {
   loading: false,
   error: false,
+  message: "",
   filterValues: {
     query: "",
     selectedFilterId: "name",

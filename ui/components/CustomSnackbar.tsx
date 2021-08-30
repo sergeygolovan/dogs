@@ -1,9 +1,12 @@
 import { Alert, Snackbar } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { useAppDispatch } from "../store";
 import { removeMessage } from "../store/features/messages/messages.slice";
+import IMessage from "../types/message";
 
-function CustomSnackbar({ id, message, type, position }) {
+type CustomSnackbarProps = IMessage & { position: number };
+
+const CustomSnackbar: FC<CustomSnackbarProps> = ({ id, message, type, position }) => {
   const [open, setOpen] = useState(true);
 
   const dispatch = useAppDispatch();
@@ -24,7 +27,7 @@ function CustomSnackbar({ id, message, type, position }) {
         top: `${top}px`,
       }}
       open={open}
-      autoHideDuration={5000}
+      autoHideDuration={3000}
       anchorOrigin={{
         vertical: "top",
         horizontal: "center",

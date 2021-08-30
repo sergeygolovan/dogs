@@ -1,4 +1,4 @@
-import { AnyAction, createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { AnyAction, createEntityAdapter, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { createCustomer, deleteCustomer, fetchCustomerCollection, updateCustomer } from "../../actions/customer.actions";
 import ICustomer from "../../../types/customer";
 import { HYDRATE } from "next-redux-wrapper";
@@ -127,4 +127,5 @@ export const customerCollectionSlice = createSlice({
   },
 });
 
+export const { setFilterValues } = customerCollectionSlice.actions;
 export default customerCollectionSlice.reducer;
